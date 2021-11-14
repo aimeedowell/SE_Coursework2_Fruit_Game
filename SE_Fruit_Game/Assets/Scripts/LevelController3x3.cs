@@ -16,6 +16,8 @@ public class LevelController3x3 : MonoBehaviour
 
     public GameObject HighlightSquare;
 
+    public GameObject SpeechBubble;
+
     //Supporting function: Converts vector coordinates of a GameObject into a 2D int array comprising X and Y coordinates in the simplified form [(0/1/2) , (0/1/2)]
     public int[] GetCoords(GameObject obj)
     {
@@ -64,7 +66,7 @@ public class LevelController3x3 : MonoBehaviour
         //Make Highlight Square invisible
         HighlightSquare = GameObject.Find("HighlightSquare");
         HighlightSquare.SetActive(false);
-
+        SpeechBubble.SetActive(true);
 
     }
 
@@ -84,6 +86,7 @@ public class LevelController3x3 : MonoBehaviour
 
             //Make HighlightSquare visible
             HighlightSquare.SetActive(true);
+            SpeechBubble.SetActive(false);
 
             //Change GameStatus to "TileSelected"
             GameStatus = "TileSelected";
