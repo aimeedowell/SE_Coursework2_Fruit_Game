@@ -218,7 +218,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1918510572}
           m_TargetAssemblyTypeName: LevelController3x3, Assembly-CSharp
-          m_MethodName: HighlightTile
+          m_MethodName: SelectTile
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 136645906}
@@ -323,7 +323,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1918510572}
           m_TargetAssemblyTypeName: LevelController3x3, Assembly-CSharp
-          m_MethodName: HighlightTile
+          m_MethodName: SelectTile
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 140120299}
@@ -428,7 +428,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1918510572}
           m_TargetAssemblyTypeName: LevelController3x3, Assembly-CSharp
-          m_MethodName: HighlightTile
+          m_MethodName: SelectTile
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 200704382}
@@ -701,7 +701,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1918510572}
           m_TargetAssemblyTypeName: LevelController3x3, Assembly-CSharp
-          m_MethodName: HighlightTile
+          m_MethodName: SelectTile
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 590901802}
@@ -965,7 +965,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1918510572}
           m_TargetAssemblyTypeName: LevelController3x3, Assembly-CSharp
-          m_MethodName: HighlightTile
+          m_MethodName: SelectTile
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 942029403}
@@ -1070,7 +1070,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1918510572}
           m_TargetAssemblyTypeName: LevelController3x3, Assembly-CSharp
-          m_MethodName: HighlightTile
+          m_MethodName: SelectTile
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 1524091005}
@@ -1218,7 +1218,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1918510572}
           m_TargetAssemblyTypeName: LevelController3x3, Assembly-CSharp
-          m_MethodName: HighlightTile
+          m_MethodName: SelectTile
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 1902726758}
@@ -1260,6 +1260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameStatus: TileSelection
   SelectedTile: {fileID: 0}
+  SelectedTileCoords: 0000000000000000
   HighlightSquare: {fileID: 0}
 --- !u!20 &1918510573
 Camera:
@@ -1413,7 +1414,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1918510572}
           m_TargetAssemblyTypeName: LevelController3x3, Assembly-CSharp
-          m_MethodName: HighlightTile
+          m_MethodName: SelectTile
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 1996202825}
