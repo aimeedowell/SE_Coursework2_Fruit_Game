@@ -1,22 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelController3x3 : MonoBehaviour
 {
 
-    //Global variable to hold current game status as string (TileSelection, TileSelected...)
+    //Global variables
     public string GameStatus = "TileSelection";
-
-    //Global variable to hold currently selected tile object
     public GameObject SelectedTile;
-
-    //Global variable to hold SelectedTile's simplified coordinates (determined in HighlightTile() by GetCoords())
     public int[] SelectedTileCoords = new int[2];
-
+    public int CarrotsRemaining = 2;
     public GameObject HighlightSquare;
-
     public GameObject SpeechBubble;
+    public Text CarrotsRemainingText;
+
 
     //Supporting function: Converts vector coordinates of a GameObject into a 2D int array comprising X and Y coordinates in the simplified form [(0/1/2) , (0/1/2)]
     public int[] GetCoords(GameObject obj)
@@ -66,7 +64,12 @@ public class LevelController3x3 : MonoBehaviour
         //Make Highlight Square invisible
         HighlightSquare = GameObject.Find("HighlightSquare");
         HighlightSquare.SetActive(false);
+        
+        //Make SpeechBubble visible
         SpeechBubble.SetActive(true);
+
+        //Update vegetables remaining
+        UpdateVegetablesRemaining();
 
     }
 
@@ -93,5 +96,11 @@ public class LevelController3x3 : MonoBehaviour
         }
 
     }
-    
+
+    //Update the vegetables remaining table using the global variables
+    public void UpdateVegetablesRemaining()
+    {
+        CarrotsRemainingText = GameObject.Find("CarrotsRemainingText").GetComponent<Text>();
+        CarrotsRemainingText.text = CarrotsRemaining.ToString();
+    }
 }
