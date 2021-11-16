@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class BoardModel : MonoBehaviour{
     private string[,] gridBoard = new string[3, 3]; 
@@ -30,7 +31,7 @@ public class BoardModel : MonoBehaviour{
     public void addCarrot(){
         bool foundCell = false; 
 
-        Random rnd = new Random();
+        System.Random rnd = new System.Random();
 
         while (!foundCell) {
             int firstNum = rnd.Next(3);
