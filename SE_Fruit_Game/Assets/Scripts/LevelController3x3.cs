@@ -8,6 +8,7 @@ public class LevelController3x3 : MonoBehaviour
 
     //Global variables
     public string GameStatus = "TileSelection";
+    GameObject LevelComplete;
     
     public GameObject SelectedTile;
     public int[] SelectedTileCoords = new int[2];
@@ -71,6 +72,9 @@ public class LevelController3x3 : MonoBehaviour
         //Make Highlight Square invisible
         HighlightSquare = GameObject.Find("HighlightSquare");
         HighlightSquare.SetActive(false);
+        //Make Level Complete Sign invisible 
+        LevelComplete = GameObject.Find("LevelComplete");
+        LevelComplete.SetActive(false);
 
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
@@ -149,6 +153,13 @@ public class LevelController3x3 : MonoBehaviour
                 //Update carrots remaining text
                 CarrotsRemaining -= 1;
                 UpdateVegetablesRemaining();
+
+                if (CarrotsRemaining == 0)
+                {
+                    //Wait 1 second
+                    yield return new WaitForSeconds(1);
+                    LevelComplete.SetActive(true);
+                }
             }
         }
 
