@@ -22,6 +22,7 @@ public class LevelController3x3 : MonoBehaviour
     public GameObject SpeechBubble;
     public Text CarrotsRemainingText;
     public GameObject QuestionPopUp;
+    public QuestionInput Inp;
 
     BoardModel boardobject;
 
@@ -130,6 +131,13 @@ public class LevelController3x3 : MonoBehaviour
         if (GameStatus == "InQuestion")
         {
             QuestionPopUp.SetActive(true);
+            
+            if (Inp.text == "test")
+            {
+                QuestionPopUp.SetActive(false);
+                GameStatus = "questioncorrect";
+            }
+
         }
 
     }
