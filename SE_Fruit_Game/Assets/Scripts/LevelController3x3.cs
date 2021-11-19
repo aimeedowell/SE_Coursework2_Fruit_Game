@@ -21,6 +21,7 @@ public class LevelController3x3 : MonoBehaviour
     public GameObject HighlightSquare;
     public GameObject SpeechBubble;
     public Text CarrotsRemainingText;
+    public GameObject QuestionPopUp;
 
     BoardModel boardobject;
 
@@ -75,6 +76,9 @@ public class LevelController3x3 : MonoBehaviour
         //Make Level Complete Sign invisible 
         LevelComplete = GameObject.Find("LevelComplete");
         LevelComplete.SetActive(false);
+        //Make QuestionPopUp invisible
+        QuestionPopUp = GameObject.Find("QuestionPopUp");
+        QuestionpopUp.SetActive(false);
 
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
@@ -122,6 +126,11 @@ public class LevelController3x3 : MonoBehaviour
     public void Question()
     {
         StartCoroutine(waiter());
+
+        if (GameStatus == "InQuestion")
+        {
+            QuestionPopUp.SetActive(true);
+        }
 
     }
 
