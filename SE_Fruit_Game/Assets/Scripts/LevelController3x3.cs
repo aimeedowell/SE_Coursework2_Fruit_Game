@@ -78,7 +78,7 @@ public class LevelController3x3 : MonoBehaviour
         LevelComplete.SetActive(false);
         //Make QuestionPopUp invisible
         QuestionPopUp = GameObject.Find("QuestionPopUp");
-        QuestionpopUp.SetActive(false);
+        QuestionPopUp.SetActive(false);
 
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
