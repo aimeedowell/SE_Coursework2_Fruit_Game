@@ -144,6 +144,11 @@ public class LevelController3x3 : MonoBehaviour
         }
     }
 
+    void ResetQuestionInput()
+    {
+        Inp.GetComponent<InputField>().text = "";
+    }
+
     //Implementation of the Question() function
     IEnumerator OnQuestionCorrect()
     {
@@ -155,7 +160,8 @@ public class LevelController3x3 : MonoBehaviour
 
         if (GameStatus == "QuestionCorrect")
         {
-
+            ResetQuestionInput();
+            
             //Code to check if carrot is present
             string VegetableFound = boardobject.makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
 
