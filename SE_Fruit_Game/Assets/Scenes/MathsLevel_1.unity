@@ -1857,6 +1857,7 @@ GameObject:
   - component: {fileID: 1470516161}
   - component: {fileID: 1470516163}
   - component: {fileID: 1470516162}
+  - component: {fileID: 1470516164}
   m_Layer: 5
   m_Name: QuestionPopUp
   m_TagString: Untagged
@@ -1925,6 +1926,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1470516160}
   m_CullTransparentMesh: 1
+--- !u!114 &1470516164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470516160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50dfc456d23e34a39a6e49fed6087cc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  QuestionPopUpUI: {fileID: 1470516160}
+  QuestionInputUI: {fileID: 388457660}
 --- !u!1 &1524091005
 GameObject:
   m_ObjectHideFlags: 0
@@ -2575,8 +2590,6 @@ MonoBehaviour:
   HighlightSquare: {fileID: 0}
   SpeechBubble: {fileID: 747392234}
   CarrotsRemainingText: {fileID: 0}
-  QuestionPopUp: {fileID: 0}
-  Inp: {fileID: 388457660}
 --- !u!20 &1918510573
 Camera:
   m_ObjectHideFlags: 0

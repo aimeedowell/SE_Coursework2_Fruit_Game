@@ -21,8 +21,8 @@ public class LevelController3x3 : MonoBehaviour
     public GameObject HighlightSquare;
     public GameObject SpeechBubble;
     public Text CarrotsRemainingText;
-    public GameObject QuestionPopUp;
-    public InputField Inp;
+    GameObject QuestionPopUpManager;
+
 
     BoardModel boardobject;
 
@@ -77,9 +77,9 @@ public class LevelController3x3 : MonoBehaviour
         //Make Level Complete Sign invisible 
         LevelComplete = GameObject.Find("LevelComplete");
         LevelComplete.SetActive(false);
-        //Make QuestionPopUp invisible
-        QuestionPopUp = GameObject.Find("QuestionPopUp");
-        QuestionPopUp.SetActive(false);
+
+        QuestionPopUpManager = GameObject.Find("QuestionPopUp");
+        QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
 
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
@@ -117,25 +117,18 @@ public class LevelController3x3 : MonoBehaviour
             //Change GameStatus to "InQuestion"
             GameStatus = "InQuestion";
 
-            //Execute Question -- wait 2 secs and then change GameStatus to TileReveal
-            ShowQuestion();   
+            if (GameStatus == "InQuestion")
+            {
+                //Execute Question
+                QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ShowQuestion();   
+            }
         }
 
-    }
-
-    //For the purposes of the Week 7 demo, to show the highlight mechanic, Question() waits and then implements a correct answer
-    public void ShowQuestion()
-    {
-        if (GameStatus == "InQuestion")
-        {
-            QuestionPopUp.SetActive(true);
-        }
     }
 
     public void OnQuestionInputChanged()
     {
-        InputField inputField = Inp.GetComponent<InputField>();
-        string value = inputField.text;
+        string value = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().GetInputString();
 
         if (value == "test")
         {
@@ -144,10 +137,7 @@ public class LevelController3x3 : MonoBehaviour
         }
     }
 
-    void ResetQuestionInput()
-    {
-        Inp.GetComponent<InputField>().text = "";
-    }
+
 
     //Implementation of the Question() function
     IEnumerator OnQuestionCorrect()
@@ -156,11 +146,11 @@ public class LevelController3x3 : MonoBehaviour
         yield return new WaitForSeconds(1);
         //Disappear HighlightSquare
         HighlightSquare.SetActive(false);
-        QuestionPopUp.SetActive(false);
+        QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
 
         if (GameStatus == "QuestionCorrect")
         {
-            ResetQuestionInput();
+            QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ResetQuestionInput();
             
             //Code to check if carrot is present
             string VegetableFound = boardobject.makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
