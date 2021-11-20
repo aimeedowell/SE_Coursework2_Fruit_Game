@@ -21,6 +21,8 @@ public class LevelController3x3 : MonoBehaviour
     public GameObject HighlightSquare;
     public GameObject SpeechBubble;
     public Text CarrotsRemainingText;
+    GameObject QuestionPopUpManager;
+
 
     BoardModel boardobject;
 
@@ -76,6 +78,9 @@ public class LevelController3x3 : MonoBehaviour
         LevelComplete = GameObject.Find("LevelComplete");
         LevelComplete.SetActive(false);
 
+        QuestionPopUpManager = GameObject.Find("QuestionPopUp");
+        QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
+
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
         {
@@ -112,61 +117,73 @@ public class LevelController3x3 : MonoBehaviour
             //Change GameStatus to "InQuestion"
             GameStatus = "InQuestion";
 
-            //Execute Question -- wait 2 secs and then change GameStatus to TileReveal
-            Question();   
-        }
-
-    }
-
-    //For the purposes of the Week 7 demo, to show the highlight mechanic, Question() waits and then implements a correct answer
-    public void Question()
-    {
-        StartCoroutine(waiter());
-
-    }
-
-    //Implementation of the Question() function
-    IEnumerator waiter()
-    {
-        //Wait 1 second
-        yield return new WaitForSeconds(1);
-
-        //Disappear HighlightSquare
-        HighlightSquare.SetActive(false);
-
-        //Code to check if carrot is present
-        string VegetableFound = boardobject.makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
-
-        //If carrot, then disappear tile and show carrot
-        if (VegetableFound != "null")
-        {
-            //Dissapear tile
-            SelectedTile.SetActive(false);
-
-            if (VegetableFound == "Carrot")
+            if (GameStatus == "InQuestion")
             {
-                //Show find carrot, make visible and move to postion of tile
-                Vegetable = CarrotsArray[CarrotsRemaining - 1];
-                Vegetable.SetActive(true);
-                Vegetable.GetComponent<RectTransform>().anchoredPosition = SelectedTilePos;
-
-                //Update carrots remaining text
-                CarrotsRemaining -= 1;
-                UpdateVegetablesRemaining();
-
-                if (CarrotsRemaining == 0)
-                {
-                    //Wait 1 second
-                    yield return new WaitForSeconds(1);
-                    LevelComplete.SetActive(true);
-                }
+                //Execute Question
+                QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ShowQuestion();   
             }
         }
 
-        //If no carrot, then disappear tile
-        else
+    }
+
+    public void OnQuestionInputChanged()
+    {
+        string value = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().GetInputString();
+
+        if (value == "test")
         {
-            SelectedTile.SetActive(false);
+            GameStatus = "QuestionCorrect";
+            StartCoroutine(OnQuestionCorrect());
+        }
+    }
+
+
+
+    //Implementation of the Question() function
+    IEnumerator OnQuestionCorrect()
+    {
+        //Wait 1 second
+        yield return new WaitForSeconds(1);
+        //Disappear HighlightSquare
+        HighlightSquare.SetActive(false);
+        QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
+
+        if (GameStatus == "QuestionCorrect")
+        {
+            QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ResetQuestionInput();
+            
+            //Code to check if carrot is present
+            string VegetableFound = boardobject.makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
+
+            //If carrot, then disappear tile and show carrot
+            if (VegetableFound != "null")
+            {
+                //Dissapear tile
+                SelectedTile.SetActive(false);
+
+                if (VegetableFound == "Carrot")
+                {
+                    //Show find carrot, make visible and move to postion of tile
+                    Vegetable = CarrotsArray[CarrotsRemaining - 1];
+                    Vegetable.SetActive(true);
+                    Vegetable.GetComponent<RectTransform>().anchoredPosition = SelectedTilePos;
+
+                    //Update carrots remaining text
+                    CarrotsRemaining -= 1;
+                    UpdateVegetablesRemaining();
+
+                    if (CarrotsRemaining == 0)
+                    {
+                        //Wait 1 second
+                        yield return new WaitForSeconds(1);
+                        LevelComplete.SetActive(true);
+                    }
+                }
+            }
+            else //If no carrot, then disappear tile
+            {
+                SelectedTile.SetActive(false);
+            }
         }
 
         GameStatus = "TileSelection";
