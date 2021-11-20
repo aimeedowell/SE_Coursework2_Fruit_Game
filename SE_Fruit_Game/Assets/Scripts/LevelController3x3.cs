@@ -22,7 +22,7 @@ public class LevelController3x3 : MonoBehaviour
     public GameObject SpeechBubble;
     public Text CarrotsRemainingText;
     public GameObject QuestionPopUp;
-    public QuestionInput Inp;
+    public InputField Inp;
 
     BoardModel boardobject;
 
@@ -118,72 +118,76 @@ public class LevelController3x3 : MonoBehaviour
             GameStatus = "InQuestion";
 
             //Execute Question -- wait 2 secs and then change GameStatus to TileReveal
-            Question();   
+            ShowQuestion();   
         }
 
     }
 
     //For the purposes of the Week 7 demo, to show the highlight mechanic, Question() waits and then implements a correct answer
-    public void Question()
+    public void ShowQuestion()
     {
-        StartCoroutine(waiter());
-
         if (GameStatus == "InQuestion")
         {
             QuestionPopUp.SetActive(true);
-            
-            if (Inp.text == "test")
-            {
-                QuestionPopUp.SetActive(false);
-                GameStatus = "questioncorrect";
-            }
-
         }
+    }
 
+    public void OnQuestionInputChanged()
+    {
+        InputField inputField = Inp.GetComponent<InputField>();
+        string value = inputField.text;
+
+        if (value == "test")
+        {
+            GameStatus = "QuestionCorrect";
+            StartCoroutine(OnQuestionCorrect());
+        }
     }
 
     //Implementation of the Question() function
-    IEnumerator waiter()
+    IEnumerator OnQuestionCorrect()
     {
         //Wait 1 second
         yield return new WaitForSeconds(1);
-
         //Disappear HighlightSquare
         HighlightSquare.SetActive(false);
+        QuestionPopUp.SetActive(false);
 
-        //Code to check if carrot is present
-        string VegetableFound = boardobject.makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
-
-        //If carrot, then disappear tile and show carrot
-        if (VegetableFound != "null")
+        if (GameStatus == "QuestionCorrect")
         {
-            //Dissapear tile
-            SelectedTile.SetActive(false);
 
-            if (VegetableFound == "Carrot")
+            //Code to check if carrot is present
+            string VegetableFound = boardobject.makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
+
+            //If carrot, then disappear tile and show carrot
+            if (VegetableFound != "null")
             {
-                //Show find carrot, make visible and move to postion of tile
-                Vegetable = CarrotsArray[CarrotsRemaining - 1];
-                Vegetable.SetActive(true);
-                Vegetable.GetComponent<RectTransform>().anchoredPosition = SelectedTilePos;
+                //Dissapear tile
+                SelectedTile.SetActive(false);
 
-                //Update carrots remaining text
-                CarrotsRemaining -= 1;
-                UpdateVegetablesRemaining();
-
-                if (CarrotsRemaining == 0)
+                if (VegetableFound == "Carrot")
                 {
-                    //Wait 1 second
-                    yield return new WaitForSeconds(1);
-                    LevelComplete.SetActive(true);
+                    //Show find carrot, make visible and move to postion of tile
+                    Vegetable = CarrotsArray[CarrotsRemaining - 1];
+                    Vegetable.SetActive(true);
+                    Vegetable.GetComponent<RectTransform>().anchoredPosition = SelectedTilePos;
+
+                    //Update carrots remaining text
+                    CarrotsRemaining -= 1;
+                    UpdateVegetablesRemaining();
+
+                    if (CarrotsRemaining == 0)
+                    {
+                        //Wait 1 second
+                        yield return new WaitForSeconds(1);
+                        LevelComplete.SetActive(true);
+                    }
                 }
             }
-        }
-
-        //If no carrot, then disappear tile
-        else
-        {
-            SelectedTile.SetActive(false);
+            else //If no carrot, then disappear tile
+            {
+                SelectedTile.SetActive(false);
+            }
         }
 
         GameStatus = "TileSelection";
