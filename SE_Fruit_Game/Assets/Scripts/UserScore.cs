@@ -7,7 +7,7 @@ public class UserScore : MonoBehaviour
     private double currentScore;
     private double score; 
 
-    public UserScore(){
+    public void Start(){
         this.score = 100; 
         this.currentScore = 0; 
     }
