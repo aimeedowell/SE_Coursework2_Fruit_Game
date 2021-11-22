@@ -24,4 +24,8 @@ public class UserScore : MonoBehaviour
     public void halveScore() {
         this.score = System.Math.Round(this.score/2.0, 2);
     }
+
+    public void newQuestion() {
+        this.score = 100; 
+    }
 }
