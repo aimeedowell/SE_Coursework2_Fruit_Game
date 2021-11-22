@@ -1,22 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelController3x3 : MonoBehaviour
 {
 
-    //Global variable to hold current game status as string (TileSelection, TileSelected...)
+    //Global variables
     public string GameStatus = "TileSelection";
-
-    //Global variable to hold currently selected tile object
+    GameObject LevelComplete;
+    
     public GameObject SelectedTile;
-
-    //Global variable to hold SelectedTile's simplified coordinates (determined in HighlightTile() by GetCoords())
     public int[] SelectedTileCoords = new int[2];
+    public Vector2 SelectedTilePos;
 
+    public GameObject Vegetable;
+    public GameObject[] CarrotsArray = new GameObject[2];
+    public int CarrotsRemaining = 2;
+    
     public GameObject HighlightSquare;
-
     public GameObject SpeechBubble;
+    public Text CarrotsRemainingText;
+    GameObject QuestionPopUpManager;
+
+
+    BoardModel boardobject;
 
     //Supporting function: Converts vector coordinates of a GameObject into a 2D int array comprising X and Y coordinates in the simplified form [(0/1/2) , (0/1/2)]
     public int[] GetCoords(GameObject obj)
@@ -66,32 +74,123 @@ public class LevelController3x3 : MonoBehaviour
         //Make Highlight Square invisible
         HighlightSquare = GameObject.Find("HighlightSquare");
         HighlightSquare.SetActive(false);
+        //Make Level Complete Sign invisible 
+        LevelComplete = GameObject.Find("LevelComplete");
+        LevelComplete.SetActive(false);
+
+        QuestionPopUpManager = GameObject.Find("QuestionPopUp");
+        QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
+
+        //Make all vegetables invisible
+        foreach (GameObject car in CarrotsArray)
+        {
+            car.SetActive(false);
+        }
+
+        //Make SpeechBubble visible
         SpeechBubble.SetActive(true);
 
+        //Update vegetables remaining
+        UpdateVegetablesRemaining();
+
+        boardobject = new BoardModel(1);
     }
 
     //If GameStatus is TileSelection, on click highlight the selected tile and update GameStatus, SelectedTile and SelectedTileCoords
     public void SelectTile(GameObject obj)
     {
         //Check if GameStatus is TileSelection
-        if (GameStatus == "TileSelection") {
-
+        if (GameStatus == "TileSelection") 
+        {
             //Set global SelectedTile to the selected tile and global SelectedTileCoords to the coordinates of the selected tile
             SelectedTile = obj;
             SelectedTileCoords = GetCoords(obj);
 
             //Get position of selected tile and set to position of HighlightSquare
-            Vector2 objPos = obj.GetComponent<RectTransform>().anchoredPosition;
-            HighlightSquare.GetComponent<RectTransform>().anchoredPosition = objPos;
+            SelectedTilePos = obj.GetComponent<RectTransform>().anchoredPosition;
+            HighlightSquare.GetComponent<RectTransform>().anchoredPosition = SelectedTilePos;
 
             //Make HighlightSquare visible
             HighlightSquare.SetActive(true);
             SpeechBubble.SetActive(false);
 
-            //Change GameStatus to "TileSelected"
-            GameStatus = "TileSelected";
+            //Change GameStatus to "InQuestion"
+            GameStatus = "InQuestion";
+
+            if (GameStatus == "InQuestion")
+            {
+                //Execute Question
+                StartCoroutine(QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ShowQuestion()); 
+            }
         }
 
     }
-    
+
+    public void OnQuestionInputChanged()
+    {
+        string value = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().GetInputString();
+
+        if (value == "6")
+        {
+            GameStatus = "QuestionCorrect";
+            StartCoroutine(OnQuestionCorrect());
+        }
+    }
+
+
+    //Implementation of the Question() function
+    IEnumerator OnQuestionCorrect()
+    {
+        //Wait 1 second
+        yield return new WaitForSeconds(1);
+        QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
+
+        if (GameStatus == "QuestionCorrect")
+        {
+            QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ResetQuestionInput();
+            
+            //Code to check if carrot is present
+            string VegetableFound = boardobject.makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
+
+            //If carrot, then disappear tile and show carrot
+            if (VegetableFound != "null")
+            {
+                //Dissapear tile
+                SelectedTile.SetActive(false);
+
+                if (VegetableFound == "Carrot")
+                {
+                    //Show find carrot, make visible and move to postion of tile
+                    Vegetable = CarrotsArray[CarrotsRemaining - 1];
+                    Vegetable.SetActive(true);
+                    Vegetable.GetComponent<RectTransform>().anchoredPosition = SelectedTilePos;
+
+                    //Update carrots remaining text
+                    CarrotsRemaining -= 1;
+                    UpdateVegetablesRemaining();
+
+                    if (CarrotsRemaining == 0)
+                    {
+                        GameStatus = "LevelComplete";
+                        //Wait 1 second
+                        yield return new WaitForSeconds(1);
+                        LevelComplete.SetActive(true);
+                    }
+                }
+            }
+            else //If no carrot, then disappear tile
+            {
+                SelectedTile.SetActive(false);
+            }
+        }
+        if (GameStatus != "LevelComplete")
+            GameStatus = "TileSelection";
+    }
+
+    //Update the vegetables remaining table using the global variables
+    public void UpdateVegetablesRemaining()
+    {
+        CarrotsRemainingText = GameObject.Find("CarrotsRemainingText").GetComponent<Text>();
+        CarrotsRemainingText.text = CarrotsRemaining.ToString();
+    }
 }
