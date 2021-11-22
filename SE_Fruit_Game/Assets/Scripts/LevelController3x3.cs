@@ -22,8 +22,7 @@ public class LevelController3x3 : MonoBehaviour
     public GameObject SpeechBubble;
     public Text CarrotsRemainingText;
     GameObject QuestionPopUpManager;
-
-
+    ArithmeticQuestionGenerator QuestionGenerator;
     BoardModel boardobject;
 
     //Supporting function: Converts vector coordinates of a GameObject into a 2D int array comprising X and Y coordinates in the simplified form [(0/1/2) , (0/1/2)]
@@ -94,6 +93,7 @@ public class LevelController3x3 : MonoBehaviour
         UpdateVegetablesRemaining();
 
         boardobject = new BoardModel(1);
+        QuestionGenerator = new ArithmeticQuestionGenerator(1);
     }
 
     //If GameStatus is TileSelection, on click highlight the selected tile and update GameStatus, SelectedTile and SelectedTileCoords
@@ -120,6 +120,8 @@ public class LevelController3x3 : MonoBehaviour
             if (GameStatus == "InQuestion")
             {
                 //Execute Question
+                var question = QuestionGenerator.generateQuestion();
+                QuestionPopUpManager.GetComponent<QuestionPopUpManager>().SetQuestion(question.Item1, question.Item2);
                 StartCoroutine(QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ShowQuestion()); 
             }
         }
@@ -128,9 +130,12 @@ public class LevelController3x3 : MonoBehaviour
 
     public void OnQuestionInputChanged()
     {
-        string value = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().GetInputString();
+        string userInput = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().GetInputString();
 
-        if (value == "6")
+        bool isCorrect = false;
+        isCorrect = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().IsQuestionCorrect(userInput);
+
+        if (isCorrect)
         {
             GameStatus = "QuestionCorrect";
             StartCoroutine(OnQuestionCorrect());
