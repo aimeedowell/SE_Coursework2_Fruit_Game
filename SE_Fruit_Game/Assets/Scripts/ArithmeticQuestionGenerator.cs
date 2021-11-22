@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public class ArithmeticQuestionGenerator {
+public class ArithmeticQuestionGenerator : MonoBehaviour {
     private int level; 
     private int upperRange;
 
