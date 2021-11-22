@@ -10,6 +10,8 @@ public class QuestionPopUpManager : MonoBehaviour
     public InputField QuestionInputUI;
     GameObject HighlightSquare;  
     GameObject QuestionTitle;
+    GameObject ScoreManager;
+    public Text ScoreCountUI;
     double correctAnswer;
 
     // Start is called before the first frame update
@@ -17,6 +19,9 @@ public class QuestionPopUpManager : MonoBehaviour
     {
         HighlightSquare = GameObject.Find("HighlightSquare");
         QuestionTitle = GameObject.Find("QuestionTitle");
+        ScoreManager = new GameObject();
+        ScoreManager.name = "score";
+        ScoreManager.AddComponent<UserScore>();
     }
 
     public void HideQuestionPopUp()
@@ -35,13 +40,28 @@ public class QuestionPopUpManager : MonoBehaviour
     {   
         if (isNumeric(userAnswer))
         {   
-            if (System.Convert.ToDouble(userAnswer) == correctAnswer)
+            if (System.Convert.ToDouble(userAnswer) == correctAnswer) //Question Correct
+            {
+                ScoreManager.GetComponent<UserScore>().incrementScore(); //100 points if answered correctly first try 
+                UpdateScoreText();
                 return true;
-            else 
+            }
+            else //Question Incorrect
+            {
+                ScoreManager.GetComponent<UserScore>().halveScore(); //Next available points are halved 
                 return false;
+            }
         }
-        else
+        else //Answer not a number
             return false;
+    }
+
+    void UpdateScoreText()
+    {
+        double score  = ScoreManager.GetComponent<UserScore>().CurrentScore; 
+        ScoreCountUI = GameObject.Find("ScoreTextUI").GetComponent<Text>();
+        ScoreCountUI.text = score.ToString();
+
     }
 
     bool isNumeric(String str) 
