@@ -46,7 +46,7 @@ public class BoardModel : MonoBehaviour{
     }
 
     public double getDistance(int xCoord, int yCoord){
-        double dist = Math.Sqrt(Math.Pow(xCoord - 1, 2)+ Math.Pow(yCoord - 1, 2));
+        double dist = System.Math.Sqrt(System.Math.Pow(xCoord - 1, 2)+ System.Math.Pow(yCoord - 1, 2));
         return dist;
     }
 
