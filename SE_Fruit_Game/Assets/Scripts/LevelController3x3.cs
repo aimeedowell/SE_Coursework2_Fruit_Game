@@ -100,8 +100,8 @@ public class LevelController3x3 : MonoBehaviour
     public void SelectTile(GameObject obj)
     {
         //Check if GameStatus is TileSelection
-        if (GameStatus == "TileSelection") {
-
+        if (GameStatus == "TileSelection") 
+        {
             //Set global SelectedTile to the selected tile and global SelectedTileCoords to the coordinates of the selected tile
             SelectedTile = obj;
             SelectedTileCoords = GetCoords(obj);
@@ -120,7 +120,7 @@ public class LevelController3x3 : MonoBehaviour
             if (GameStatus == "InQuestion")
             {
                 //Execute Question
-                QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ShowQuestion();   
+                StartCoroutine(QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ShowQuestion()); 
             }
         }
 
@@ -130,7 +130,7 @@ public class LevelController3x3 : MonoBehaviour
     {
         string value = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().GetInputString();
 
-        if (value == "test")
+        if (value == "6")
         {
             GameStatus = "QuestionCorrect";
             StartCoroutine(OnQuestionCorrect());
@@ -138,14 +138,11 @@ public class LevelController3x3 : MonoBehaviour
     }
 
 
-
     //Implementation of the Question() function
     IEnumerator OnQuestionCorrect()
     {
         //Wait 1 second
         yield return new WaitForSeconds(1);
-        //Disappear HighlightSquare
-        HighlightSquare.SetActive(false);
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
 
         if (GameStatus == "QuestionCorrect")
@@ -174,6 +171,7 @@ public class LevelController3x3 : MonoBehaviour
 
                     if (CarrotsRemaining == 0)
                     {
+                        GameStatus = "LevelComplete";
                         //Wait 1 second
                         yield return new WaitForSeconds(1);
                         LevelComplete.SetActive(true);
@@ -185,8 +183,8 @@ public class LevelController3x3 : MonoBehaviour
                 SelectedTile.SetActive(false);
             }
         }
-
-        GameStatus = "TileSelection";
+        if (GameStatus != "LevelComplete")
+            GameStatus = "TileSelection";
     }
 
     //Update the vegetables remaining table using the global variables
