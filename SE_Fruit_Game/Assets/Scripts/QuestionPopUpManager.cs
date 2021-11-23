@@ -13,12 +13,14 @@ public class QuestionPopUpManager : MonoBehaviour
     GameObject ScoreManager;
     public Text ScoreCountUI;
     double correctAnswer;
+    GameObject AnswerNotificationUI;
 
     // Start is called before the first frame update
     void Start()
     {
         HighlightSquare = GameObject.Find("HighlightSquare");
         QuestionTitle = GameObject.Find("QuestionTitle");
+        AnswerNotificationUI = GameObject.Find("AnswerNotification");
         ScoreManager = new GameObject();
         ScoreManager.name = "score";
         ScoreManager.AddComponent<UserScore>();
@@ -30,6 +32,22 @@ public class QuestionPopUpManager : MonoBehaviour
         QuestionPopUpUI.SetActive(false);
     }
 
+    public void HideAnswerNotification()
+    {
+        //Make AnswerNotification invisible
+        AnswerNotificationUI.SetActive(false);
+    }
+
+    public void ResetQuestion()
+    {
+        //reset question once button is clicked
+        ArithmeticQuestionGenerator questionGen = new ArithmeticQuestionGenerator(1);
+        Tuple<string, double> questionTuple = questionGen.generateQuestion();
+        string question = questionTuple.Item1;
+        double ans = questionTuple.Item2;
+        SetQuestion(questionTuple.Item1, questionTuple.Item2);
+
+    } 
     public void SetQuestion(string questionText, double questionAnswer)
     {   
         QuestionTitle.GetComponent<Text>().text = questionText;
@@ -44,16 +62,21 @@ public class QuestionPopUpManager : MonoBehaviour
             {
                 ScoreManager.GetComponent<UserScore>().incrementScore(); //100 points if answered correctly first try 
                 UpdateScoreText();
+                HideAnswerNotification();
                 return true;
             }
             else //Question Incorrect
             {
                 ScoreManager.GetComponent<UserScore>().halveScore(); //Next available points are halved 
+                AnswerNotificationUI.SetActive(true);
                 return false;
             }
         }
         else //Answer not a number
+        {
+            AnswerNotificationUI.SetActive(true);   
             return false;
+        }
     }
 
     void UpdateScoreText()
@@ -88,6 +111,7 @@ public class QuestionPopUpManager : MonoBehaviour
         QuestionPopUpUI.SetActive(true);
         //Disappear HighlightSquare
         HighlightSquare.SetActive(false);
+        HideAnswerNotification();
     }
 
     public void ResetQuestionInput()
