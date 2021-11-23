@@ -13,7 +13,7 @@ public class ArithmeticQuestionGenerator : MonoBehaviour {
     }
 
     private void setUpperRange() {
-        int upperBoundary = 5;
+        int upperBoundary = 10;
 
         if (this.level == 2 || this.level == 3) {
             upperBoundary = 10;
