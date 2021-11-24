@@ -15,6 +15,8 @@ public class QuestionPopUpManager : MonoBehaviour
     double correctAnswer;
     GameObject AnswerNotificationUI;
     GameObject QuestionGen;
+    public GameObject CorrectRing;
+    public GameObject IncorrectRing;
 
     // Start is called before the first frame update
     void Start()
@@ -47,6 +49,9 @@ public class QuestionPopUpManager : MonoBehaviour
         //reset question once button is clicked
         Tuple<string, double> questionTuple = QuestionGen.GetComponent<ArithmeticQuestionGenerator>().generateQuestion();
         SetQuestion(questionTuple.Item1, questionTuple.Item2);
+        IncorrectRing.SetActive(false);
+        CorrectRing.SetActive(false);
+        QuestionInputUI.GetComponent<InputField>().text = "";
     } 
     public void SetQuestion(string questionText, double questionAnswer)
     {   
@@ -60,6 +65,7 @@ public class QuestionPopUpManager : MonoBehaviour
         {   
             if (System.Convert.ToDouble(userAnswer) == correctAnswer) //Question Correct
             {
+                CorrectRing.SetActive(true);
                 ScoreManager.GetComponent<UserScore>().incrementScore(); //100 points if answered correctly first try 
                 UpdateScoreText();
                 HideAnswerNotification();
@@ -67,6 +73,7 @@ public class QuestionPopUpManager : MonoBehaviour
             }
             else //Question Incorrect
             {
+                IncorrectRing.SetActive(true);
                 ScoreManager.GetComponent<UserScore>().halveScore(); //Next available points are halved 
                 AnswerNotificationUI.SetActive(true);
                 return false;
@@ -74,7 +81,9 @@ public class QuestionPopUpManager : MonoBehaviour
         }
         else //Answer not a number
         {
-            AnswerNotificationUI.SetActive(true);   
+            IncorrectRing.SetActive(true);
+            ScoreManager.GetComponent<UserScore>().halveScore(); //Next available points are halved 
+            AnswerNotificationUI.SetActive(true); 
             return false;
         }
     }
@@ -113,6 +122,8 @@ public class QuestionPopUpManager : MonoBehaviour
         //Disappear HighlightSquare
         HighlightSquare.SetActive(false);
         HideAnswerNotification();
+        IncorrectRing.SetActive(false);
+        CorrectRing.SetActive(false);
     }
 
     public void ResetQuestionInput()
