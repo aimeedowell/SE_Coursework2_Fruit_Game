@@ -64,9 +64,7 @@ public class ArithmeticQuestionGenerator : MonoBehaviour {
     }
 
     private int getRandomNum(int lowerBound, int upperBound){
-        System.Random rnd = new System.Random(); 
-
-        int rndNum = rnd.Next(lowerBound, upperBound);
+        int rndNum = UnityEngine.Random.Range(lowerBound, upperBound);
         return rndNum; 
     }
 
