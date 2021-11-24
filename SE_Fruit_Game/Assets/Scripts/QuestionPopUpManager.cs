@@ -82,6 +82,7 @@ public class QuestionPopUpManager : MonoBehaviour
     void UpdateScoreText()
     {
         double score  = ScoreManager.GetComponent<UserScore>().CurrentScore; 
+        score = Convert.ToInt32(score);
         ScoreCountUI = GameObject.Find("ScoreTextUI").GetComponent<Text>();
         ScoreCountUI.text = score.ToString();
 
