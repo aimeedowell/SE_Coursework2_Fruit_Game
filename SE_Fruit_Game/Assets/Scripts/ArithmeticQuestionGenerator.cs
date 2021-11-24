@@ -13,7 +13,7 @@ public class ArithmeticQuestionGenerator : MonoBehaviour {
     }
 
     private void setUpperRange() {
-        int upperBoundary = 5;
+        int upperBoundary = 10;
 
         if (this.level == 2 || this.level == 3) {
             upperBoundary = 10;
@@ -64,9 +64,7 @@ public class ArithmeticQuestionGenerator : MonoBehaviour {
     }
 
     private int getRandomNum(int lowerBound, int upperBound){
-        System.Random rnd = new System.Random(); 
-
-        int rndNum = rnd.Next(lowerBound, upperBound);
+        int rndNum = UnityEngine.Random.Range(lowerBound, upperBound);
         return rndNum; 
     }
 
