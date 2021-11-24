@@ -2,14 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public class ArithmeticQuestionGenerator : MonoBehaviour {
+public class ArithmeticQuestionGenerator : MonoBehaviour 
+{
     private int level; 
     private int upperRange;
-
     private string[] operations = new string[] {"+", "-", "*", "/"};
-    public ArithmeticQuestionGenerator(int level) {
-        this.level = level;
-        setUpperRange(); 
+
+    private void Start() {
+        
+    }
+
+    public int Level {
+        get {return level;}
+        set {
+            level = value;
+            setUpperRange(); 
+        }
     }
 
     private void setUpperRange() {

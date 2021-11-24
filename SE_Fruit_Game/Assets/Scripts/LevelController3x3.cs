@@ -22,8 +22,8 @@ public class LevelController3x3 : MonoBehaviour
     public GameObject SpeechBubble;
     public Text CarrotsRemainingText;
     GameObject QuestionPopUpManager;
-    ArithmeticQuestionGenerator QuestionGenerator;
-    BoardModel boardobject;
+    GameObject QuestionGenerator;
+    GameObject boardobject;
 
     //Supporting function: Converts vector coordinates of a GameObject into a 2D int array comprising X and Y coordinates in the simplified form [(0/1/2) , (0/1/2)]
     public int[] GetCoords(GameObject obj)
@@ -92,8 +92,19 @@ public class LevelController3x3 : MonoBehaviour
         //Update vegetables remaining
         UpdateVegetablesRemaining();
 
-        boardobject = new BoardModel(1);
-        QuestionGenerator = new ArithmeticQuestionGenerator(1);
+        boardobject = new GameObject();
+        boardobject.AddComponent<BoardModel>();
+        boardobject.GetComponent<BoardModel>().Level = 1;
+
+        QuestionGenerator = new GameObject();
+        QuestionGenerator.AddComponent<ArithmeticQuestionGenerator>();
+        QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().Level = 1;
+    }
+
+    void Update() 
+    {
+        if (GameStatus == "InQuestion")
+            OnQuestionInputChanged();
     }
 
     //If GameStatus is TileSelection, on click highlight the selected tile and update GameStatus, SelectedTile and SelectedTileCoords
@@ -120,7 +131,7 @@ public class LevelController3x3 : MonoBehaviour
             if (GameStatus == "InQuestion")
             {
                 //Execute Question
-                var question = QuestionGenerator.generateQuestion();
+                var question = QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().generateQuestion();
                 QuestionPopUpManager.GetComponent<QuestionPopUpManager>().SetQuestion(question.Item1, question.Item2);
                 StartCoroutine(QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ShowQuestion()); 
             }
@@ -131,14 +142,16 @@ public class LevelController3x3 : MonoBehaviour
     public void OnQuestionInputChanged()
     {
         string userInput = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().GetInputString();
-
         bool isCorrect = false;
-        isCorrect = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().IsQuestionCorrect(userInput);
-
-        if (isCorrect)
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            GameStatus = "QuestionCorrect";
-            StartCoroutine(OnQuestionCorrect());
+            isCorrect = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().IsQuestionCorrect(userInput);
+
+            if (isCorrect)
+            {
+                GameStatus = "QuestionCorrect";
+                StartCoroutine(OnQuestionCorrect());
+            }
         }
     }
 
@@ -155,7 +168,7 @@ public class LevelController3x3 : MonoBehaviour
             QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ResetQuestionInput();
             
             //Code to check if carrot is present
-            string VegetableFound = boardobject.makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
+            string VegetableFound = boardobject.GetComponent<BoardModel>().makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
 
             //If carrot, then disappear tile and show carrot
             if (VegetableFound != "null")
@@ -199,3 +212,4 @@ public class LevelController3x3 : MonoBehaviour
         CarrotsRemainingText.text = CarrotsRemaining.ToString();
     }
 }
+
