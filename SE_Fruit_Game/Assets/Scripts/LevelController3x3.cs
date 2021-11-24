@@ -96,6 +96,12 @@ public class LevelController3x3 : MonoBehaviour
         QuestionGenerator = new ArithmeticQuestionGenerator(1);
     }
 
+    void Update() 
+    {
+        if (GameStatus == "InQuestion")
+            OnQuestionInputChanged();
+    }
+
     //If GameStatus is TileSelection, on click highlight the selected tile and update GameStatus, SelectedTile and SelectedTileCoords
     public void SelectTile(GameObject obj)
     {
@@ -131,14 +137,16 @@ public class LevelController3x3 : MonoBehaviour
     public void OnQuestionInputChanged()
     {
         string userInput = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().GetInputString();
-
         bool isCorrect = false;
-        isCorrect = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().IsQuestionCorrect(userInput);
-
-        if (isCorrect)
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            GameStatus = "QuestionCorrect";
-            StartCoroutine(OnQuestionCorrect());
+            isCorrect = QuestionPopUpManager.GetComponent<QuestionPopUpManager>().IsQuestionCorrect(userInput);
+
+            if (isCorrect)
+            {
+                GameStatus = "QuestionCorrect";
+                StartCoroutine(OnQuestionCorrect());
+            }
         }
     }
 
@@ -199,3 +207,4 @@ public class LevelController3x3 : MonoBehaviour
         CarrotsRemainingText.text = CarrotsRemaining.ToString();
     }
 }
+
