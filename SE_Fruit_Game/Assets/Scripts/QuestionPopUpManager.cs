@@ -14,6 +14,7 @@ public class QuestionPopUpManager : MonoBehaviour
     public Text ScoreCountUI;
     double correctAnswer;
     GameObject AnswerNotificationUI;
+    GameObject QuestionGen;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +25,9 @@ public class QuestionPopUpManager : MonoBehaviour
         ScoreManager = new GameObject();
         ScoreManager.name = "score";
         ScoreManager.AddComponent<UserScore>();
+        QuestionGen = new GameObject();
+        QuestionGen.AddComponent<ArithmeticQuestionGenerator>();
+        QuestionGen.GetComponent<ArithmeticQuestionGenerator>().Level = 1;
     }
 
     public void HideQuestionPopUp()
@@ -41,12 +45,8 @@ public class QuestionPopUpManager : MonoBehaviour
     public void ResetQuestion()
     {
         //reset question once button is clicked
-        ArithmeticQuestionGenerator questionGen = new ArithmeticQuestionGenerator(1);
-        Tuple<string, double> questionTuple = questionGen.generateQuestion();
-        string question = questionTuple.Item1;
-        double ans = questionTuple.Item2;
+        Tuple<string, double> questionTuple = QuestionGen.GetComponent<ArithmeticQuestionGenerator>().generateQuestion();
         SetQuestion(questionTuple.Item1, questionTuple.Item2);
-
     } 
     public void SetQuestion(string questionText, double questionAnswer)
     {   
