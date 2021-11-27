@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LevelController3x3 : MonoBehaviour
 {
@@ -25,6 +26,15 @@ public class LevelController3x3 : MonoBehaviour
     GameObject QuestionGenerator;
     GameObject boardobject;
 
+    public void ContinueButtonClicked()
+    {
+        SceneManager.LoadScene("MathsLevel_2");
+    }
+
+    public void ReturnButtonClicked()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
     //Supporting function: Converts vector coordinates of a GameObject into a 2D int array comprising X and Y coordinates in the simplified form [(0/1/2) , (0/1/2)]
     public int[] GetCoords(GameObject obj)
     {
@@ -193,6 +203,7 @@ public class LevelController3x3 : MonoBehaviour
                         //Wait 1 second
                         yield return new WaitForSeconds(1);
                         LevelComplete.SetActive(true);
+
                     }
                 }
             }
@@ -204,6 +215,8 @@ public class LevelController3x3 : MonoBehaviour
         if (GameStatus != "LevelComplete")
             GameStatus = "TileSelection";
     }
+
+
 
     //Update the vegetables remaining table using the global variables
     public void UpdateVegetablesRemaining()
