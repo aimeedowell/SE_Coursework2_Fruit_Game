@@ -4,25 +4,20 @@ using UnityEngine;
 
 public class UserScore : MonoBehaviour
 {
-    private double currentScore;
-    private double score; 
+    private int score; 
 
     public void Start(){
         this.score = 100; 
-        this.currentScore = 0; 
-    }
-
-    public double CurrentScore {
-        get {return currentScore;}
+        StaticVariables.Score = 0; 
     }
 
     public void incrementScore() {
-        this.currentScore += this.score; 
+        StaticVariables.Score += this.score; 
         this.score = 100; 
     }
 
     public void halveScore() {
-        this.score = System.Math.Round(this.score/2.0, 2);
+        this.score = System.Convert.ToInt16(System.Math.Round(this.score/2.0, 2));
     }
 
     public void newQuestion() {

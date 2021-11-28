@@ -2813,7 +2813,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   QuestionPopUpUI: {fileID: 1470516160}
   QuestionInputUI: {fileID: 388457660}
-  ScoreCountUI: {fileID: 0}
+  HighlightSquare: {fileID: 652695342}
+  QuestionTitle: {fileID: 268171064}
+  ScoreCountUI: {fileID: 1535873974}
+  AnswerNotificationUI: {fileID: 1327773659}
   CorrectRing: {fileID: 1683502877}
   IncorrectRing: {fileID: 1684454185}
 --- !u!1 &1524091005

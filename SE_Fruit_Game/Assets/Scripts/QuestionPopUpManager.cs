@@ -8,25 +8,22 @@ public class QuestionPopUpManager : MonoBehaviour
 {
     public GameObject QuestionPopUpUI;
     public InputField QuestionInputUI;
-    GameObject HighlightSquare;  
-    GameObject QuestionTitle;
+    public GameObject HighlightSquare;  
+    public GameObject QuestionTitle;
     GameObject ScoreManager;
     public Text ScoreCountUI;
     double correctAnswer;
-    GameObject AnswerNotificationUI;
+    public GameObject AnswerNotificationUI;
     GameObject QuestionGen;
     public GameObject CorrectRing;
     public GameObject IncorrectRing;
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        HighlightSquare = GameObject.Find("HighlightSquare");
-        QuestionTitle = GameObject.Find("QuestionTitle");
-        AnswerNotificationUI = GameObject.Find("AnswerNotification");
         ScoreManager = new GameObject();
         ScoreManager.name = "score";
-        ScoreManager.AddComponent<UserScore>();
+        ScoreManager.AddComponent<UserScore>();  
         QuestionGen = new GameObject();
         QuestionGen.AddComponent<ArithmeticQuestionGenerator>();
         QuestionGen.GetComponent<ArithmeticQuestionGenerator>().Level = 1;
@@ -88,12 +85,11 @@ public class QuestionPopUpManager : MonoBehaviour
         }
     }
 
-    void UpdateScoreText()
+    public void UpdateScoreText()
     {
-        double score  = ScoreManager.GetComponent<UserScore>().CurrentScore; 
-        score = Convert.ToInt32(score);
-        ScoreCountUI = GameObject.Find("ScoreTextUI").GetComponent<Text>();
+        int score = StaticVariables.Score; 
         ScoreCountUI.text = score.ToString();
+        Debug.Log(score);
 
     }
 

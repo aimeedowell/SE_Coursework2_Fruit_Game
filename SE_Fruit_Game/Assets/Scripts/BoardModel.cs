@@ -5,7 +5,7 @@ using System;
 
 public class BoardModel : MonoBehaviour
 {
-    private string[,] gridBoard = new string[3, 3]; 
+    private string[,] gridBoard; 
     private int level;
 
    private void Start() {
@@ -19,7 +19,9 @@ public class BoardModel : MonoBehaviour
         }
     }
 
-    private void initialiseBoard(){
+    private void initialiseBoard()
+    {
+        gridBoard = new string[getGridSize(), getGridSize()]; 
         this.gridBoard[1,1] = "Strawberry";
 
         for (int carrot = 0; carrot < 2; carrot++){
@@ -28,14 +30,21 @@ public class BoardModel : MonoBehaviour
 
     }
 
+    int getGridSize(){
+        if (this.level == 1)
+            return 3;
+        else
+            return 5;
+    }
+
     public void addCarrot(){
         bool foundCell = false; 
 
         System.Random rnd = new System.Random();
 
         while (!foundCell) {
-            int firstNum = rnd.Next(3);
-            int secondNum = rnd.Next(3);
+            int firstNum = rnd.Next(getGridSize());
+            int secondNum = rnd.Next(getGridSize());
 
             if (this.gridBoard[firstNum, secondNum] == null && getDistance(firstNum, secondNum) > 1) {
                 this.gridBoard[firstNum, secondNum] = "Carrot";
