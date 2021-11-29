@@ -22,7 +22,13 @@ public class BoardModel : MonoBehaviour
     private void initialiseBoard()
     {
         gridBoard = new string[getGridSize(), getGridSize()]; 
-        this.gridBoard[1,1] = "Strawberry";
+        
+        if (getGridSize() == 3) {
+            this.gridBoard[1,1] = "Strawberry";
+        } else {
+            this.gridBoard[2,2] = "Strawberry";
+        }
+        
 
         for (int carrot = 0; carrot < 2; carrot++){
             addCarrot();
@@ -30,15 +36,25 @@ public class BoardModel : MonoBehaviour
 
     }
 
-    int getGridSize(){
-        if (this.level == 1)
-            return 3;
-        else
-            return 5;
+    public int getGridSize(){
+        int gridSize = 0;
+        
+        if (this.level == 1) {
+            gridSize = 3;
+        } else {
+            gridSize = 5;
+        }
+
+        return gridSize;
     }
 
     public void addCarrot(){
+        int minReqDistance = 1;
         bool foundCell = false; 
+
+        if (Level == 2){
+            minReqDistance = 2;
+        }
 
         System.Random rnd = new System.Random();
 
@@ -46,7 +62,7 @@ public class BoardModel : MonoBehaviour
             int firstNum = rnd.Next(getGridSize());
             int secondNum = rnd.Next(getGridSize());
 
-            if (this.gridBoard[firstNum, secondNum] == null && getDistance(firstNum, secondNum) > 1) {
+            if (this.gridBoard[firstNum, secondNum] == null && getDistance(firstNum, secondNum) > minReqDistance) {
                 this.gridBoard[firstNum, secondNum] = "Carrot";
                 foundCell = true;
             } 
@@ -55,7 +71,11 @@ public class BoardModel : MonoBehaviour
     }
 
     public double getDistance(int xCoord, int yCoord){
-        double dist = System.Math.Sqrt(System.Math.Pow(xCoord - 1, 2)+ System.Math.Pow(yCoord - 1, 2));
+        int steveLocation = 1; 
+        if (Level == 2) {
+            steveLocation = 2;
+        }
+        double dist = System.Math.Sqrt(System.Math.Pow(xCoord - steveLocation, 2)+ System.Math.Pow(yCoord - steveLocation, 2));
         return dist;
     }
 
