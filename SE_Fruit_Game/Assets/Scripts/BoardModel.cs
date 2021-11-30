@@ -8,7 +8,7 @@ public class BoardModel : MonoBehaviour
     private string[,] gridBoard; 
     private int level;
 
-   private void Start() {
+   public void Start() {
         initialiseBoard();
     }
 
@@ -17,6 +17,10 @@ public class BoardModel : MonoBehaviour
         set {
             level = value;
         }
+    }
+
+    public string[,] GridBoard {
+        get {return gridBoard;}
     }
 
     private void initialiseBoard()
