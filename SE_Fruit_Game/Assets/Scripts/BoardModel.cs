@@ -239,20 +239,12 @@ public class BoardModel : MonoBehaviour
                 ReturnString = (xcor).ToString() + (ycor + CarrotMovement).ToString();
                
                 }
-
-
                 this.gridBoard[xcor, ycor] = "null";
                 CarrotPositioned = true;
                 
             }
-
-
-
         }
         return ReturnString;
-
-
-
     }
 }
 

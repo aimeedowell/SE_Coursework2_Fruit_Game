@@ -12,7 +12,12 @@ public class LevelController5x5 : MonoBehaviour
     
     GameObject SelectedTile;
     int[] SelectedTileCoords = new int[2];
-    Vector2 SelectedTilePos;
+    Vector3 SelectedTilePos;
+    public GameObject[] TileRow1 = new GameObject[5];
+    public GameObject[] TileRow2 = new GameObject[5];
+    public GameObject[] TileRow3 = new GameObject[5];
+    public GameObject[] TileRow4 = new GameObject[5];
+    public GameObject[] TileRow5 = new GameObject[5];
 
     GameObject Vegetable;
     public GameObject[] CarrotsArray = new GameObject[2];
@@ -79,15 +84,16 @@ public class LevelController5x5 : MonoBehaviour
         {
             //Set global SelectedTile to the selected tile and global SelectedTileCoords to the coordinates of the selected tile
             SelectedTile = obj;
-            SelectedTileCoords = GetCoords(obj);
-
             //Get position of selected tile and set to position of HighlightSquare
-            SelectedTilePos = obj.GetComponent<RectTransform>().anchoredPosition;
-            HighlightSquare.GetComponent<RectTransform>().anchoredPosition = SelectedTilePos;
+            SelectedTilePos = SelectedTile.transform.position;
+            SelectedTilePos.z = 0;
+            HighlightSquare.transform.position = SelectedTilePos;
 
             //Make HighlightSquare visible
             HighlightSquare.SetActive(true);
             SpeechBubble.SetActive(false);
+
+            SelectedTileCoords = GetCoords(obj);
 
             //Change GameStatus to "InQuestion"
             GameStatus = "InQuestion";
@@ -106,40 +112,35 @@ public class LevelController5x5 : MonoBehaviour
     public int[] GetCoords(GameObject obj)
     {
         int[] objCoords = new int[2];
-        
-        //Obtain X and Y coordinates (Unity-form) of obj
-        Vector2 objPos = obj.GetComponent<RectTransform>().anchoredPosition;
-        float objPosX = objPos.x;
-        float objPosY = objPos.y;
 
-        //Convert X coordinate (Unity-form) of obj into simplified form and insert into objCoords
-        switch (objPosX)
+        for (int i = 0; i < 5; i++)
         {
-            case -98:
-                objCoords[0] = 0;
-                break;
-            case 2:
-                objCoords[0] = 1;
-                break;
-            default:
-                objCoords[0] = 2;
-                break;
+            if (obj == TileRow1[i])
+            {
+                objCoords[0] = i;
+                objCoords[1] = 0;     
+            }
+            else if (obj == TileRow2[i])
+            {
+                objCoords[0] = i;
+                objCoords[1] = 1;     
+            }
+            else if (obj == TileRow3[i])
+            {
+                objCoords[0] = i;
+                objCoords[1] = 2;     
+            }
+            else if (obj == TileRow4[i])
+            {
+                objCoords[0] = i;
+                objCoords[1] = 3;     
+            }
+            else if (obj == TileRow5[i])
+            {
+                objCoords[0] = i;
+                objCoords[1] = 4;     
+            }
         }
-
-        //Convert Y coordinate (Unity-form) of obj into simplified form and insert into objCoords
-        switch (objPosY)
-        {
-            case 98:
-                objCoords[1] = 0;
-                break;
-            case -2:
-                objCoords[1] = 1;
-                break;
-            default:
-                objCoords[1] = 2;
-                break;
-        }
-
         //Return the 2D array of simplified coordinates
         return objCoords;
     }
@@ -184,7 +185,7 @@ public class LevelController5x5 : MonoBehaviour
                     //Show find carrot, make visible and move to postion of tile
                     Vegetable = CarrotsArray[CarrotsRemaining - 1];
                     Vegetable.SetActive(true);
-                    Vegetable.GetComponent<RectTransform>().anchoredPosition = SelectedTilePos;
+                    Vegetable.transform.position = SelectedTilePos;
 
                     //Update carrots remaining text
                     CarrotsRemaining -= 1;
