@@ -38,7 +38,12 @@ public class BoardModel : MonoBehaviour
         for (int carrot = 0; carrot < 2; carrot++){
             addCarrot();
         }
-
+        if (getGridSize() > 3)
+        {
+            for (int banana = 0; banana < 2; banana++){
+                addBanana();
+            }
+        }
     }
 
     public int getGridSize(){
@@ -75,6 +80,25 @@ public class BoardModel : MonoBehaviour
 
     }
 
+    public void addBanana(){
+        bool foundCell = false; 
+
+        System.Random rnd = new System.Random();
+
+        while (!foundCell) {
+            int firstNum = rnd.Next(getGridSize());
+            int secondNum = rnd.Next(getGridSize());
+
+            if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot") 
+            {
+                this.gridBoard[firstNum, secondNum] = "Banana";
+                Debug.Log(firstNum);
+                Debug.Log(secondNum);
+                foundCell = true;
+            } 
+        }
+    }
+
     public double getDistance(int xCoord, int yCoord){
         int steveLocation = 1; 
         if (Level == 2) {
@@ -93,31 +117,31 @@ public class BoardModel : MonoBehaviour
         return carrotPresent;
     }
 
-    public string makeGuess(int xCoord, int yCoord) {
-        string cellFlag = "Invalid";
-  
-        if (this.gridBoard[xCoord, yCoord] == null || this.gridBoard[xCoord, yCoord] == "Carrot") {
-            
-            if (isCarrotPresent(xCoord, yCoord)){
-                cellFlag = "Carrot";
-                
-            } else {
-                cellFlag = "null";
-            }
-            
-
-            if (cellFlag != "null") {
-                this.gridBoard[xCoord, yCoord] = "Found";
-            } else {
-                this.gridBoard[xCoord, yCoord] = "Guessed";
-            }
-        }
-        
-
-        return cellFlag;
+      private bool isBananaPresent(int xCoord, int yCoord) 
+    {
+        bool bananaPresent = false;
+        if (this.gridBoard[xCoord, yCoord] == "Banana")
+            bananaPresent = true;
+    
+        return bananaPresent;
     }
 
 
+    public string makeGuess(int xCoord, int yCoord) {
+        string cellFlag;
+ 
+        if (isCarrotPresent(xCoord, yCoord)){
+            cellFlag = "Carrot";
+        }
+        else if (isBananaPresent(xCoord, yCoord)){
+            cellFlag = "Banana";
+        }
+        else {
+            cellFlag = "null";
+        }
+ 
+        return cellFlag;
+    }
 
     // Movement of Vegetables
     public int moveVegetables() {
@@ -168,9 +192,9 @@ public class BoardModel : MonoBehaviour
             if(up >= 0 && this.gridBoard[xcor - CarrotMovement, ycor] == null){
                 Movements.Add(new Tuple<double, string, int>(up, "up",rnd.Next(100)));   
             }
-            else if(up >= 0 && (this.gridBoard[xcor - CarrotMovement, ycor] != "Found" || 
+            else if(up >= 0 && (this.gridBoard[xcor - CarrotMovement, ycor] != "Carrot" || 
                            this.gridBoard[xcor - CarrotMovement, ycor] != "Carrot"|| 
-                           this.gridBoard[xcor - CarrotMovement, ycor] != "Guessed")) {
+                           this.gridBoard[xcor - CarrotMovement, ycor] != "null")) {
                 Movements.Add(new Tuple<double, string, int>(up, "up",rnd.Next(100)));
             }
 
@@ -178,27 +202,27 @@ public class BoardModel : MonoBehaviour
             if(down >= 0 && this.gridBoard[xcor + CarrotMovement, ycor] == null){
                 Movements.Add(new Tuple<double, string, int>(down, "down",rnd.Next(100)));
             }
-            else if(down >= 0 && (this.gridBoard[xcor + CarrotMovement, ycor] != "Found" || 
+            else if(down >= 0 && (this.gridBoard[xcor + CarrotMovement, ycor] != "Carrot" || 
                            this.gridBoard[xcor + CarrotMovement, ycor] != "Carrot"|| 
-                           this.gridBoard[xcor + CarrotMovement, ycor] !="Guessed")) {   
+                           this.gridBoard[xcor + CarrotMovement, ycor] !="null")) {   
             Movements.Add(new Tuple<double, string, int>(down, "down",rnd.Next(100)));}
 
 
             if(left >= 0 && this.gridBoard[xcor , ycor - CarrotMovement] == null){
                 Movements.Add(new Tuple<double, string, int>(left, "left",rnd.Next(100)));
             }            
-            else if(left >= 0 && (this.gridBoard[xcor , ycor - CarrotMovement] != "Found" || 
+            else if(left >= 0 && (this.gridBoard[xcor , ycor - CarrotMovement] != "Carrot" || 
                            this.gridBoard[xcor , ycor - CarrotMovement] != "Carrot"|| 
-                           this.gridBoard[xcor , ycor - CarrotMovement] !="Guessed")) {  
+                           this.gridBoard[xcor , ycor - CarrotMovement] !="null")) {  
                 Movements.Add(new Tuple<double, string, int>(left, "left",rnd.Next(100)));}
 
 
             if(right >= 0 && this.gridBoard[xcor , ycor + CarrotMovement] == null){
                 Movements.Add(new Tuple<double, string, int>(right, "right",rnd.Next(100)));
             }            
-            else if(right >= 0 && (this.gridBoard[xcor , ycor + CarrotMovement] != "Found" || 
+            else if(right >= 0 && (this.gridBoard[xcor , ycor + CarrotMovement] != "Carrot" || 
                            this.gridBoard[xcor , ycor + CarrotMovement] != "Carrot"|| 
-                           this.gridBoard[xcor , ycor + CarrotMovement] != "Guessed")) {
+                           this.gridBoard[xcor , ycor + CarrotMovement] != "null")) {
                 Movements.Add(new Tuple<double, string, int>(right, "right",rnd.Next(100)));}
 
 
