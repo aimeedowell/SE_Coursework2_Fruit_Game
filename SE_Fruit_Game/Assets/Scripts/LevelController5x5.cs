@@ -203,6 +203,7 @@ public class LevelController5x5 : MonoBehaviour
             else //If no carrot, then disappear tile
             {
                 SelectedTile.SetActive(false);
+                BoardObject.GetComponent<BoardModel>().moveVegetables();
             }
         }
         if (GameStatus != "LevelComplete")
