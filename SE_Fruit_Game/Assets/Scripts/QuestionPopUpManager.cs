@@ -89,8 +89,6 @@ public class QuestionPopUpManager : MonoBehaviour
     {
         int score = StaticVariables.Score; 
         ScoreCountUI.text = score.ToString();
-        Debug.Log(score);
-
     }
 
     bool isNumeric(String str) 
