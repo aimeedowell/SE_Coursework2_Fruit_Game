@@ -22,6 +22,8 @@ public class LevelController5x5 : MonoBehaviour
     GameObject Vegetable;
     public GameObject[] CarrotsArray = new GameObject[2];
     int CarrotsRemaining = 2;
+    public GameObject[] BananaArray = new GameObject[2];
+    int BananasRemaining = 2;
     
     GameObject HighlightSquare;
     public GameObject SpeechBubble;
@@ -49,6 +51,10 @@ public class LevelController5x5 : MonoBehaviour
         foreach (GameObject car in CarrotsArray)
         {
             car.SetActive(false);
+        }
+        foreach (GameObject ban in BananaArray)
+        {
+            ban.SetActive(false);
         }
 
         //Make SpeechBubble visible
@@ -197,8 +203,17 @@ public class LevelController5x5 : MonoBehaviour
                         //Wait 1 second
                         yield return new WaitForSeconds(1);
                         LevelComplete.SetActive(true);
-
                     }
+                }
+                else if (VegetableFound == "Banana" && BananasRemaining > 0)
+                {
+                    //Show find banana, make visible and move to postion of tile
+                    GameObject Fruit = BananaArray[BananasRemaining - 1];
+                    Fruit.SetActive(true);
+                    Fruit.transform.position = SelectedTilePos;
+
+                    //Update carrots remaining text
+                    BananasRemaining -= 1;
                 }
             }
             else //If no carrot, then disappear tile
