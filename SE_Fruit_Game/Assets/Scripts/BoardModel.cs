@@ -7,6 +7,8 @@ using System.Linq;
 public class BoardModel : MonoBehaviour
 {
     private string[,] gridBoard; 
+    List<int> currentCarrotPositions = new List<int>();
+    List<int> previousCarrotPositions = new List<int>();
     private int level;
 
    public void Start() {
@@ -74,6 +76,9 @@ public class BoardModel : MonoBehaviour
 
             if (this.gridBoard[firstNum, secondNum] == null && getDistance(firstNum, secondNum) > minReqDistance) {
                 this.gridBoard[firstNum, secondNum] = "Carrot";
+                Debug.Log("Carrot: x is " + firstNum + " and y is" + secondNum);  
+                previousCarrotPositions.Add(firstNum);
+                previousCarrotPositions.Add(secondNum);
                 foundCell = true;
             } 
         }
@@ -92,8 +97,7 @@ public class BoardModel : MonoBehaviour
             if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot") 
             {
                 this.gridBoard[firstNum, secondNum] = "Banana";
-                Debug.Log(firstNum);
-                Debug.Log(secondNum);
+                Debug.Log("Banana: x is " + firstNum + " and y is" + secondNum);       
                 foundCell = true;
             } 
         }
@@ -147,6 +151,7 @@ public class BoardModel : MonoBehaviour
     public int moveVegetables() {
         int gridSize = getGridSize();
         List <string> RepositionedCarrots = new List<string>();
+        previousCarrotPositions.Clear();
         
 
         // gridBoard = gridBoard;        // This is the grid where carrots are updated
@@ -159,12 +164,13 @@ public class BoardModel : MonoBehaviour
                 
                 if(this.gridBoard[i,j] == "Carrot" && !RepositionedCarrots.Contains(CarrotCheck)){
                     
+                    previousCarrotPositions.Add(i);
+                    previousCarrotPositions.Add(j);
                     var newPos  = GetNewCarrotPosition(gridSize,i,j);
                     RepositionedCarrots.Add(newPos);         
-                }
-                
-            }
 
+                }
+            }
         }
         return 0;
     }
@@ -269,6 +275,42 @@ public class BoardModel : MonoBehaviour
             }
         }
         return ReturnString;
+    }
+
+    public List<int> GetCarrotPosition()
+    {
+        currentCarrotPositions.Clear();
+        for (int i = 0; i < getGridSize(); i = i + 1) 
+        {
+            for (int j = 0; j < getGridSize(); j = j + 1)
+            {
+                if (this.gridBoard[i,j] == "Carrot")
+                {
+                    currentCarrotPositions.Add(i);
+                    currentCarrotPositions.Add(j);
+                    Debug.Log("Carrot: x is " + i + " and y is" + j);
+                }
+            }
+        }
+        return currentCarrotPositions;
+    }
+
+    private List<int> GetPreviousCarrotPosition()
+    {
+        return previousCarrotPositions;
+    }
+
+    public void PushCarrotsBackOneMove()
+    {
+        for (int i = 0; i < currentCarrotPositions.Count(); i+=2)
+        {
+            int firstNum = GetCarrotPosition()[i];
+            int secondNum = GetCarrotPosition()[i+1];
+            int newFirstNum = GetPreviousCarrotPosition()[i];
+            int newSecondNum = GetPreviousCarrotPosition()[i+1];
+            this.gridBoard[firstNum,secondNum] = "null";
+            this.gridBoard[newFirstNum, newSecondNum] = "Carrot";
+        }
     }
 }
 

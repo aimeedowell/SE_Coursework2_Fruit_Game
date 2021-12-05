@@ -211,15 +211,16 @@ public class LevelController5x5 : MonoBehaviour
                     GameObject Fruit = BananaArray[BananasRemaining - 1];
                     Fruit.SetActive(true);
                     Fruit.transform.position = SelectedTilePos;
-
-                    //Update carrots remaining text
                     BananasRemaining -= 1;
+                    BoardObject.GetComponent<BoardModel>().PushCarrotsBackOneMove();
+                    BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
                 }
             }
             else //If no carrot, then disappear tile
             {
                 SelectedTile.SetActive(false);
                 BoardObject.GetComponent<BoardModel>().moveVegetables();
+                BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
             }
         }
         if (GameStatus != "LevelComplete")
