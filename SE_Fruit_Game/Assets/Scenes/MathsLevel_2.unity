@@ -1916,6 +1916,7 @@ MonoBehaviour:
   - {fileID: 1971536696}
   - {fileID: 879252151}
   SpeechBubble: {fileID: 1690911715}
+  SpeechText: {fileID: 1941695932}
 --- !u!114 &459933168
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -27,6 +27,7 @@ public class LevelController5x5 : MonoBehaviour
     
     GameObject HighlightSquare;
     public GameObject SpeechBubble;
+    public GameObject SpeechText;
     Text CarrotsRemainingText;
     GameObject QuestionPopUpManager;
     GameObject QuestionGenerator;
@@ -57,8 +58,9 @@ public class LevelController5x5 : MonoBehaviour
             ban.SetActive(false);
         }
 
-        //Make SpeechBubble visible
-        SpeechBubble.SetActive(true);
+        Text text = SpeechText.GetComponent<Text>();
+        text.text = SteveQuotes.TileSelection;
+        StartCoroutine(FadeSpeechBubble());
 
         //Update vegetables remaining
         UpdateVegetablesRemaining();
@@ -204,6 +206,10 @@ public class LevelController5x5 : MonoBehaviour
                         yield return new WaitForSeconds(1);
                         LevelComplete.SetActive(true);
                     }
+
+                    Text text = SpeechText.GetComponent<Text>();
+                    text.text = SteveQuotes.CarrotFound;
+                    StartCoroutine(FadeSpeechBubble());
                 }
                 else if (VegetableFound == "Banana" && BananasRemaining > 0)
                 {
@@ -214,6 +220,10 @@ public class LevelController5x5 : MonoBehaviour
                     BananasRemaining -= 1;
                     BoardObject.GetComponent<BoardModel>().PushCarrotsBackOneMove();
                     BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
+                    Text text = SpeechText.GetComponent<Text>();
+                    text.text = SteveQuotes.BananaFound;
+                    StartCoroutine(FadeSpeechBubble());
+                }
                 }
             }
             else //If no carrot, then disappear tile
@@ -221,6 +231,9 @@ public class LevelController5x5 : MonoBehaviour
                 SelectedTile.SetActive(false);
                 BoardObject.GetComponent<BoardModel>().moveVegetables();
                 BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
+                Text text = SpeechText.GetComponent<Text>();
+                text.text = SteveQuotes.TileEmpty;
+                StartCoroutine(FadeSpeechBubble());
             }
         }
         if (GameStatus != "LevelComplete")
@@ -244,6 +257,17 @@ public class LevelController5x5 : MonoBehaviour
         {
             HighlightSquare.SetActive(false);
         }
+    }
+        IEnumerator FadeSpeechBubble()
+    {
+        SpeechBubble.SetActive(true);
+        yield return new WaitForSeconds(1);
+
+        SpeechBubble.GetComponent<Image>().CrossFadeAlpha(1.0f, 0f, false); //fade in
+        SpeechText.GetComponent<Text>().CrossFadeAlpha(1.0f, 0f, false); //fade in
+        SpeechBubble.GetComponent<Image>().CrossFadeAlpha(0.0f, 2.5f, false); //fade out
+        SpeechText.GetComponent<Text>().CrossFadeAlpha(0.0f, 2.5f, false); //fade out
+
     }
 
 }

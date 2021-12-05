@@ -4113,6 +4113,7 @@ MonoBehaviour:
   CarrotsRemaining: 2
   HighlightSquare: {fileID: 0}
   SpeechBubble: {fileID: 747392234}
+  SpeechText: {fileID: 785867320}
   CarrotsRemainingText: {fileID: 0}
 --- !u!20 &1918510573
 Camera:

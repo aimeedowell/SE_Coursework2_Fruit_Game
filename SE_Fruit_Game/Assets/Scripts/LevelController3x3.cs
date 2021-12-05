@@ -96,8 +96,9 @@ public class LevelController3x3 : MonoBehaviour
             car.SetActive(false);
         }
 
-        //Make SpeechBubble visible
-        SpeechBubble.SetActive(true);
+        Text text = SpeechText.GetComponent<Text>();
+        text.text = SteveQuotes.TileSelection;
+        StartCoroutine(FadeSpeechBubble());
 
         //Update vegetables remaining
         UpdateVegetablesRemaining();
@@ -205,12 +206,20 @@ public class LevelController3x3 : MonoBehaviour
                         LevelComplete.SetActive(true);
 
                     }
+
+                    Text text = SpeechText.GetComponent<Text>();
+                    text.text = SteveQuotes.CarrotFound;
+                    StartCoroutine(FadeSpeechBubble());
+                }
                 }
             }
             else //If no carrot, then disappear tile
             {
                 SelectedTile.SetActive(false);
                 boardobject.GetComponent<BoardModel>().moveVegetables();
+                Text text = SpeechText.GetComponent<Text>();
+                text.text = SteveQuotes.TileEmpty;
+                StartCoroutine(FadeSpeechBubble());
             }
         }
         if (GameStatus != "LevelComplete")
@@ -224,6 +233,18 @@ public class LevelController3x3 : MonoBehaviour
     {
         CarrotsRemainingText = GameObject.Find("CarrotsRemainingText").GetComponent<Text>();
         CarrotsRemainingText.text = CarrotsRemaining.ToString();
+    }
+
+    IEnumerator FadeSpeechBubble()
+    {
+        SpeechBubble.SetActive(true);
+        yield return new WaitForSeconds(1);
+
+        SpeechBubble.GetComponent<Image>().CrossFadeAlpha(1.0f, 0f, false); //fade in
+        SpeechText.GetComponent<Text>().CrossFadeAlpha(1.0f, 0f, false); //fade in
+        SpeechBubble.GetComponent<Image>().CrossFadeAlpha(0.0f, 2.5f, false); //fade out
+        SpeechText.GetComponent<Text>().CrossFadeAlpha(0.0f, 2.5f, false); //fade out
+
     }
 }
 
