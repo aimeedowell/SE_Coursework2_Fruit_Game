@@ -224,19 +224,24 @@ public class LevelController5x5 : MonoBehaviour
                     text.text = SteveQuotes.BananaFound;
                     StartCoroutine(FadeSpeechBubble());
                 }
-                }
             }
             else //If no carrot, then disappear tile
             {
                 SelectedTile.SetActive(false);
                 BoardObject.GetComponent<BoardModel>().moveVegetables();
                 BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
+                if (BoardObject.GetComponent<BoardModel>().HasLevelFailed())
+                {
+                    GameStatus = "LevelFailed";                   
+                    Debug.Log ("Level Failed");
+                    //FUNCTIONALITY FOR LEVEL FAILED GOES HERE 
+                }
                 Text text = SpeechText.GetComponent<Text>();
                 text.text = SteveQuotes.TileEmpty;
                 StartCoroutine(FadeSpeechBubble());
             }
         }
-        if (GameStatus != "LevelComplete")
+        if (GameStatus != "LevelComplete" || GameStatus != "LevelFailed")
             GameStatus = "TileSelection";
     }
 

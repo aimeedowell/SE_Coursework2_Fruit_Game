@@ -10,6 +10,7 @@ public class BoardModel : MonoBehaviour
     List<int> currentCarrotPositions = new List<int>();
     List<int> previousCarrotPositions = new List<int>();
     private int level;
+    private bool levelFailed = false;
 
    public void Start() {
         initialiseBoard();
@@ -29,6 +30,7 @@ public class BoardModel : MonoBehaviour
     private void initialiseBoard()
     {
         gridBoard = new string[getGridSize(), getGridSize()]; 
+        levelFailed = false;
         
         if (getGridSize() == 3) {
             this.gridBoard[1,1] = "Strawberry";
@@ -168,7 +170,7 @@ public class BoardModel : MonoBehaviour
                     previousCarrotPositions.Add(j);
                     var newPos  = GetNewCarrotPosition(gridSize,i,j);
                     RepositionedCarrots.Add(newPos);         
-
+                    GetCarrotPosition();
                 }
             }
         }
@@ -286,6 +288,16 @@ public class BoardModel : MonoBehaviour
             {
                 if (this.gridBoard[i,j] == "Carrot")
                 {
+                    if (getGridSize() == 3)
+                    {
+                        if (i == 1 && j == 1) //3X3 board 
+                            levelFailed = true;
+                    }
+                    else 
+                    {
+                        if (i == 2 && j == 2) // 5X5 board 
+                            levelFailed = true;
+                    }
                     currentCarrotPositions.Add(i);
                     currentCarrotPositions.Add(j);
                     Debug.Log("Carrot: x is " + i + " and y is" + j);
@@ -311,6 +323,11 @@ public class BoardModel : MonoBehaviour
             this.gridBoard[firstNum,secondNum] = "null";
             this.gridBoard[newFirstNum, newSecondNum] = "Carrot";
         }
+    }
+
+    public bool HasLevelFailed()
+    {
+        return levelFailed;
     }
 }
 
