@@ -11,6 +11,7 @@ public class LevelController3x3 : MonoBehaviour
     public string GameStatus = "TileSelection";
     GameObject LevelComplete;
     GameObject LevelFailed;
+    GameObject MidLevelMenu;
     
     public GameObject SelectedTile;
     public int[] SelectedTileCoords = new int[2];
@@ -42,6 +43,21 @@ public class LevelController3x3 : MonoBehaviour
     public void RetryButtonClicked()
     {
        Reset();
+       MidLevelMenu.SetActive(false);
+    }
+
+    public void ExitButtonClicked()
+    {
+       if (GameStatus !="LevelComplete" && GameStatus != "LevelFailed")
+       {
+            MidLevelMenu.SetActive(true);
+            GameStatus = "Paused";
+       }
+    }
+    public void ResumeButtonClicked()
+    {
+       MidLevelMenu.SetActive(false);
+       GameStatus = "TileSelection";
     }
 
     public void ReturnButtonClicked()
@@ -86,6 +102,9 @@ public class LevelController3x3 : MonoBehaviour
         //Make Level Failed Sign invisible 
         LevelFailed = GameObject.Find("LevelFailed");
         LevelFailed.SetActive(false);
+        //Make MidLevelMenu invisible 
+        MidLevelMenu = GameObject.Find("MidLevelMenu");
+        MidLevelMenu.SetActive(false);
 
         QuestionPopUpManager = GameObject.Find("QuestionPopUp");
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
@@ -261,6 +280,7 @@ public class LevelController3x3 : MonoBehaviour
     {
         GameStatus = "TileSelection";
         CarrotsRemaining = 2;
+        StaticVariables.Score = startingScore;
         //Make Highlight Square invisible
         HighlightSquare.SetActive(false);
         //Make Level Complete Sign invisible 
