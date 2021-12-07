@@ -7,6 +7,8 @@ using System.Linq;
 public class BoardModel : MonoBehaviour
 {
     private string[,] gridBoard; 
+    List<int> currentCarrotPositions = new List<int>();
+    List<int> previousCarrotPositions = new List<int>();
     private int level;
 
    public void Start() {
@@ -38,7 +40,12 @@ public class BoardModel : MonoBehaviour
         for (int carrot = 0; carrot < 2; carrot++){
             addCarrot();
         }
-
+        if (getGridSize() > 3)
+        {
+            for (int banana = 0; banana < 2; banana++){
+                addBanana();
+            }
+        }
     }
 
     public int getGridSize(){
@@ -69,10 +76,31 @@ public class BoardModel : MonoBehaviour
 
             if (this.gridBoard[firstNum, secondNum] == null && getDistance(firstNum, secondNum) > minReqDistance) {
                 this.gridBoard[firstNum, secondNum] = "Carrot";
+                Debug.Log("Carrot: x is " + firstNum + " and y is" + secondNum);  
+                previousCarrotPositions.Add(firstNum);
+                previousCarrotPositions.Add(secondNum);
                 foundCell = true;
             } 
         }
 
+    }
+
+    public void addBanana(){
+        bool foundCell = false; 
+
+        System.Random rnd = new System.Random();
+
+        while (!foundCell) {
+            int firstNum = rnd.Next(getGridSize());
+            int secondNum = rnd.Next(getGridSize());
+
+            if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot") 
+            {
+                this.gridBoard[firstNum, secondNum] = "Banana";
+                Debug.Log("Banana: x is " + firstNum + " and y is" + secondNum);       
+                foundCell = true;
+            } 
+        }
     }
 
     public double getDistance(int xCoord, int yCoord){
@@ -93,36 +121,37 @@ public class BoardModel : MonoBehaviour
         return carrotPresent;
     }
 
-    public string makeGuess(int xCoord, int yCoord) {
-        string cellFlag = "Invalid";
-  
-        if (this.gridBoard[xCoord, yCoord] == null || this.gridBoard[xCoord, yCoord] == "Carrot") {
-            
-            if (isCarrotPresent(xCoord, yCoord)){
-                cellFlag = "Carrot";
-                
-            } else {
-                cellFlag = "null";
-            }
-            
-
-            if (cellFlag != "null") {
-                this.gridBoard[xCoord, yCoord] = "Found";
-            } else {
-                this.gridBoard[xCoord, yCoord] = "Guessed";
-            }
-        }
-        
-
-        return cellFlag;
+      private bool isBananaPresent(int xCoord, int yCoord) 
+    {
+        bool bananaPresent = false;
+        if (this.gridBoard[xCoord, yCoord] == "Banana")
+            bananaPresent = true;
+    
+        return bananaPresent;
     }
 
 
+    public string makeGuess(int xCoord, int yCoord) {
+        string cellFlag;
+ 
+        if (isCarrotPresent(xCoord, yCoord)){
+            cellFlag = "Carrot";
+        }
+        else if (isBananaPresent(xCoord, yCoord)){
+            cellFlag = "Banana";
+        }
+        else {
+            cellFlag = "null";
+        }
+ 
+        return cellFlag;
+    }
 
     // Movement of Vegetables
     public int moveVegetables() {
         int gridSize = getGridSize();
         List <string> RepositionedCarrots = new List<string>();
+        previousCarrotPositions.Clear();
         
 
         // gridBoard = gridBoard;        // This is the grid where carrots are updated
@@ -135,12 +164,13 @@ public class BoardModel : MonoBehaviour
                 
                 if(this.gridBoard[i,j] == "Carrot" && !RepositionedCarrots.Contains(CarrotCheck)){
                     
+                    previousCarrotPositions.Add(i);
+                    previousCarrotPositions.Add(j);
                     var newPos  = GetNewCarrotPosition(gridSize,i,j);
                     RepositionedCarrots.Add(newPos);         
-                }
-                
-            }
 
+                }
+            }
         }
         return 0;
     }
@@ -168,9 +198,9 @@ public class BoardModel : MonoBehaviour
             if(up >= 0 && this.gridBoard[xcor - CarrotMovement, ycor] == null){
                 Movements.Add(new Tuple<double, string, int>(up, "up",rnd.Next(100)));   
             }
-            else if(up >= 0 && (this.gridBoard[xcor - CarrotMovement, ycor] != "Found" || 
+            else if(up >= 0 && (this.gridBoard[xcor - CarrotMovement, ycor] != "Carrot" || 
                            this.gridBoard[xcor - CarrotMovement, ycor] != "Carrot"|| 
-                           this.gridBoard[xcor - CarrotMovement, ycor] != "Guessed")) {
+                           this.gridBoard[xcor - CarrotMovement, ycor] != "null")) {
                 Movements.Add(new Tuple<double, string, int>(up, "up",rnd.Next(100)));
             }
 
@@ -178,27 +208,27 @@ public class BoardModel : MonoBehaviour
             if(down >= 0 && this.gridBoard[xcor + CarrotMovement, ycor] == null){
                 Movements.Add(new Tuple<double, string, int>(down, "down",rnd.Next(100)));
             }
-            else if(down >= 0 && (this.gridBoard[xcor + CarrotMovement, ycor] != "Found" || 
+            else if(down >= 0 && (this.gridBoard[xcor + CarrotMovement, ycor] != "Carrot" || 
                            this.gridBoard[xcor + CarrotMovement, ycor] != "Carrot"|| 
-                           this.gridBoard[xcor + CarrotMovement, ycor] !="Guessed")) {   
+                           this.gridBoard[xcor + CarrotMovement, ycor] !="null")) {   
             Movements.Add(new Tuple<double, string, int>(down, "down",rnd.Next(100)));}
 
 
             if(left >= 0 && this.gridBoard[xcor , ycor - CarrotMovement] == null){
                 Movements.Add(new Tuple<double, string, int>(left, "left",rnd.Next(100)));
             }            
-            else if(left >= 0 && (this.gridBoard[xcor , ycor - CarrotMovement] != "Found" || 
+            else if(left >= 0 && (this.gridBoard[xcor , ycor - CarrotMovement] != "Carrot" || 
                            this.gridBoard[xcor , ycor - CarrotMovement] != "Carrot"|| 
-                           this.gridBoard[xcor , ycor - CarrotMovement] !="Guessed")) {  
+                           this.gridBoard[xcor , ycor - CarrotMovement] !="null")) {  
                 Movements.Add(new Tuple<double, string, int>(left, "left",rnd.Next(100)));}
 
 
             if(right >= 0 && this.gridBoard[xcor , ycor + CarrotMovement] == null){
                 Movements.Add(new Tuple<double, string, int>(right, "right",rnd.Next(100)));
             }            
-            else if(right >= 0 && (this.gridBoard[xcor , ycor + CarrotMovement] != "Found" || 
+            else if(right >= 0 && (this.gridBoard[xcor , ycor + CarrotMovement] != "Carrot" || 
                            this.gridBoard[xcor , ycor + CarrotMovement] != "Carrot"|| 
-                           this.gridBoard[xcor , ycor + CarrotMovement] != "Guessed")) {
+                           this.gridBoard[xcor , ycor + CarrotMovement] != "null")) {
                 Movements.Add(new Tuple<double, string, int>(right, "right",rnd.Next(100)));}
 
 
@@ -245,6 +275,42 @@ public class BoardModel : MonoBehaviour
             }
         }
         return ReturnString;
+    }
+
+    public List<int> GetCarrotPosition()
+    {
+        currentCarrotPositions.Clear();
+        for (int i = 0; i < getGridSize(); i = i + 1) 
+        {
+            for (int j = 0; j < getGridSize(); j = j + 1)
+            {
+                if (this.gridBoard[i,j] == "Carrot")
+                {
+                    currentCarrotPositions.Add(i);
+                    currentCarrotPositions.Add(j);
+                    Debug.Log("Carrot: x is " + i + " and y is" + j);
+                }
+            }
+        }
+        return currentCarrotPositions;
+    }
+
+    private List<int> GetPreviousCarrotPosition()
+    {
+        return previousCarrotPositions;
+    }
+
+    public void PushCarrotsBackOneMove()
+    {
+        for (int i = 0; i < currentCarrotPositions.Count(); i+=2)
+        {
+            int firstNum = GetCarrotPosition()[i];
+            int secondNum = GetCarrotPosition()[i+1];
+            int newFirstNum = GetPreviousCarrotPosition()[i];
+            int newSecondNum = GetPreviousCarrotPosition()[i+1];
+            this.gridBoard[firstNum,secondNum] = "null";
+            this.gridBoard[newFirstNum, newSecondNum] = "Carrot";
+        }
     }
 }
 
