@@ -9,6 +9,8 @@ public class LevelController5x5 : MonoBehaviour
     //Global variables
     public string GameStatus = "TileSelection";
     GameObject LevelComplete;
+    GameObject LevelFailed;
+    GameObject MidLevelMenu;
     
     GameObject SelectedTile;
     int[] SelectedTileCoords = new int[2];
@@ -36,6 +38,37 @@ public class LevelController5x5 : MonoBehaviour
     GameObject QuestionGenerator;
     GameObject BoardObject;
 
+    int startingScore;
+
+    public void ContinueButtonClicked()
+    {
+        //SceneManager.LoadScene("MathsLevel_3"); // Move to Level 3
+    }
+
+    public void RetryButtonClicked()
+    {
+        Reset();
+        MidLevelMenu.SetActive(false);
+    }
+    public void ExitButtonClicked()
+    {
+       if (GameStatus !="LevelComplete" && GameStatus != "LevelFailed")
+       {
+            MidLevelMenu.SetActive(true);
+            GameStatus = "Paused";
+       }
+    }
+    public void ResumeButtonClicked()
+    {
+       MidLevelMenu.SetActive(false);
+       GameStatus = "TileSelection";
+    }
+
+    public void ReturnButtonClicked()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +78,12 @@ public class LevelController5x5 : MonoBehaviour
         //Make Level Complete Sign invisible 
         LevelComplete = GameObject.Find("LevelComplete");
         LevelComplete.SetActive(false);
+        //Make Level Failed Sign invisible 
+        LevelFailed = GameObject.Find("LevelFailed");
+        LevelFailed.SetActive(false);
+        //Make MidLevelMenu invisible 
+        MidLevelMenu = GameObject.Find("MidLevelMenu");
+        MidLevelMenu.SetActive(false);
 
         QuestionPopUpManager = GameObject.Find("QuestionPopUp");
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().Start();
@@ -79,6 +118,8 @@ public class LevelController5x5 : MonoBehaviour
         QuestionGenerator = new GameObject();
         QuestionGenerator.AddComponent<ArithmeticQuestionGenerator>();
         QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().Level = 2;
+
+        startingScore = StaticVariables.Score;
     }
 
     // Update is called once per frame
@@ -86,10 +127,6 @@ public class LevelController5x5 : MonoBehaviour
     {
         if (GameStatus == "InQuestion")
             OnQuestionInputChanged();
-    }
-        public void ReturnButtonClicked()
-    {
-        SceneManager.LoadScene("MainMenu");
     }
     //If GameStatus is TileSelection, on click highlight the selected tile and update GameStatus, SelectedTile and SelectedTileCoords
     public void SelectTile(GameObject obj)
@@ -256,7 +293,8 @@ public class LevelController5x5 : MonoBehaviour
                 {
                     GameStatus = "LevelFailed";                   
                     Debug.Log ("Level Failed");
-                    //FUNCTIONALITY FOR LEVEL FAILED GOES HERE 
+                    StaticVariables.Score = startingScore;
+                    LevelFailed.SetActive(true);
                 }
                 Text text = SpeechText.GetComponent<Text>();
                 text.text = SteveQuotes.TileEmpty;
@@ -297,6 +335,63 @@ public class LevelController5x5 : MonoBehaviour
         SpeechBubble.GetComponent<Image>().CrossFadeAlpha(0.0f, 2.5f, false); //fade out
         SpeechText.GetComponent<Text>().CrossFadeAlpha(0.0f, 2.5f, false); //fade out
 
+    }
+
+    void Reset() 
+    {
+        GameStatus = "TileSelection";
+        CarrotsRemaining = 2;
+        BananasRemaining = 2;
+        BroccoliRemaining = 1;
+        StaticVariables.Score = startingScore;
+        //Make Highlight Square invisible
+        HighlightSquare.SetActive(false);
+        //Make Level Complete Sign invisible 
+        LevelComplete.SetActive(false);
+        //Make Level Failed Sign invisible 
+        LevelFailed.SetActive(false);
+
+        QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
+        QuestionPopUpManager.GetComponent<QuestionPopUpManager>().UpdateScoreText();
+
+        //Make all vegetables invisible
+        foreach (GameObject car in CarrotsArray)
+        {
+            car.SetActive(false);
+        }
+        foreach (GameObject ban in BananaArray)
+        {
+            ban.SetActive(false);
+        }
+        foreach (GameObject broc in BroccoliArray)
+        {
+            broc.SetActive(false);
+        }
+
+        for (int i = 0; i < 5; i++ )
+        {
+            TileRow1[i].SetActive(true);
+            TileRow2[i].SetActive(true);
+            if (i != 2) // Avoid empty obj for strawberry
+                TileRow3[i].SetActive(true);
+            TileRow4[i].SetActive(true);
+            TileRow5[i].SetActive(true);
+ 
+        }
+
+
+        Text text = SpeechText.GetComponent<Text>();
+        text.text = SteveQuotes.TileSelection;
+        StartCoroutine(FadeSpeechBubble());
+
+        BoardObject = new GameObject();
+        BoardObject.AddComponent<BoardModel>();
+        BoardObject.GetComponent<BoardModel>().Level = 1;
+
+        QuestionGenerator = new GameObject();
+        QuestionGenerator.AddComponent<ArithmeticQuestionGenerator>();
+        QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().Level = 1;
+        UpdateVegetablesRemaining();
     }
 
 }
