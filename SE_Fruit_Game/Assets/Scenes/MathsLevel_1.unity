@@ -4480,7 +4480,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1918510572}
         m_TargetAssemblyTypeName: LevelController3x3, Script
-        m_MethodName: RetryButtonClicked
+        m_MethodName: ResumeButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
