@@ -4,7 +4,8 @@ public static class SteveQuotes
     static string[] tileSelection = {"Pick a tile to reveal what's underneath it!", "Help me find all the vegetables!", "Find the carrots before they find me!!"};
     static string[] tileEmpty = {"Opps, there's nothing under that tile...", "No vegetables under this one...", "The vegetables are getting closer!!!", "Try again...!"};
 
-    static string[] carrotFound = {"Hooray! You found a carrot!!!", "Yay, that's one carrot closer to being free!", "A carrot!!", "Be gone carrot."};
+    static string[] carrotFound = {"Hooray! You found Cruella!!!", "Yay, that's one carrot closer to being free!", "A carrot!!", "Be gone carrot."};
+    static string[] broccoliFound = {"Hooray! You found a Boris!!!", "Yay, that's one broccoli closer to being free!", "A broccoli!!", "Be gone broccoli."};
     static string[] bananaFound = {"You found Barry!", "Barry will push the vegetables back a square!", "Yes! You found my friend Barry!", "Barry has given you more time to free me!"}; 
 
     public static string TileSelection
@@ -15,7 +16,6 @@ public static class SteveQuotes
             return tileSelection[i];
         }
     }
-
     public static string TileEmpty
     {
         get 
@@ -24,7 +24,6 @@ public static class SteveQuotes
             return tileEmpty[i];
         }
     }
-
     public static string CarrotFound
     {
         get 
@@ -33,8 +32,14 @@ public static class SteveQuotes
             return carrotFound[i];
         }
     }
-
-
+        public static string BroccoliFound
+    {
+        get 
+        {
+            int i = UnityEngine.Random.Range(0, broccoliFound.Length -1);
+            return broccoliFound[i];
+        }
+    }
     public static string BananaFound
     {
         get 

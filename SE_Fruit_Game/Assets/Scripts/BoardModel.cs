@@ -44,6 +44,9 @@ public class BoardModel : MonoBehaviour
         }
         if (getGridSize() > 3)
         {
+            for (int broc = 0; broc < 2; broc++){
+                addBroccoli();
+            }
             for (int banana = 0; banana < 2; banana++){
                 addBanana();
             }
@@ -104,6 +107,23 @@ public class BoardModel : MonoBehaviour
             } 
         }
     }
+        public void addBroccoli(){
+        int minReqDistance = 2;
+        bool foundCell = false; 
+
+        System.Random rnd = new System.Random();
+
+        while (!foundCell) {
+            int firstNum = rnd.Next(getGridSize());
+            int secondNum = rnd.Next(getGridSize());
+
+            if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot" && getDistance(firstNum, secondNum) > minReqDistance) {
+                this.gridBoard[firstNum, secondNum] = "Broccoli";
+                Debug.Log("Broccoli: x is " + firstNum + " and y is" + secondNum);  
+                foundCell = true;
+            } 
+        }
+    }
 
     public double getDistance(int xCoord, int yCoord){
         int steveLocation = 1; 
@@ -132,6 +152,15 @@ public class BoardModel : MonoBehaviour
         return bananaPresent;
     }
 
+    private bool isBroccoliPresent(int xCoord, int yCoord) 
+    {
+        bool brocPresent = false;
+        if (this.gridBoard[xCoord, yCoord] == "Broccoli")
+            brocPresent = true;
+    
+        return brocPresent;
+    }
+
 
     public string makeGuess(int xCoord, int yCoord) {
         string cellFlag;
@@ -141,6 +170,9 @@ public class BoardModel : MonoBehaviour
         }
         else if (isBananaPresent(xCoord, yCoord)){
             cellFlag = "Banana";
+        }
+        else if (isBroccoliPresent(xCoord, yCoord)){
+            cellFlag = "Broccoli";
         }
         else {
             cellFlag = "null";
