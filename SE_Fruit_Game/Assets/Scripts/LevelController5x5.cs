@@ -22,6 +22,8 @@ public class LevelController5x5 : MonoBehaviour
     GameObject Vegetable;
     public GameObject[] CarrotsArray = new GameObject[2];
     int CarrotsRemaining = 2;
+    public GameObject[] BroccoliArray = new GameObject[1];
+    int BroccoliRemaining = 1;
     public GameObject[] BananaArray = new GameObject[2];
     int BananasRemaining = 2;
     
@@ -29,6 +31,7 @@ public class LevelController5x5 : MonoBehaviour
     public GameObject SpeechBubble;
     public GameObject SpeechText;
     Text CarrotsRemainingText;
+    Text BroccoliRemainingText;
     GameObject QuestionPopUpManager;
     GameObject QuestionGenerator;
     GameObject BoardObject;
@@ -56,6 +59,10 @@ public class LevelController5x5 : MonoBehaviour
         foreach (GameObject ban in BananaArray)
         {
             ban.SetActive(false);
+        }
+        foreach (GameObject bro in BroccoliArray)
+        {
+            bro.SetActive(false);
         }
 
         Text text = SpeechText.GetComponent<Text>();
@@ -188,7 +195,22 @@ public class LevelController5x5 : MonoBehaviour
                 //Dissapear tile
                 SelectedTile.SetActive(false);
 
-                if (VegetableFound == "Carrot")
+                if (VegetableFound == "Broccoli")
+                {
+                    //Show find carrot, make visible and move to postion of tile
+                    Vegetable = BroccoliArray[BroccoliRemaining - 1];
+                    Vegetable.SetActive(true);
+                    Vegetable.transform.position = SelectedTilePos;
+
+                    //Update carrots remaining text
+                    BroccoliRemaining -= 1;
+                    UpdateVegetablesRemaining();
+
+                    Text text = SpeechText.GetComponent<Text>();
+                    text.text = SteveQuotes.BroccoliFound;
+                    StartCoroutine(FadeSpeechBubble());
+                }
+                else if (VegetableFound == "Carrot")
                 {
                     //Show find carrot, make visible and move to postion of tile
                     Vegetable = CarrotsArray[CarrotsRemaining - 1];
@@ -198,14 +220,6 @@ public class LevelController5x5 : MonoBehaviour
                     //Update carrots remaining text
                     CarrotsRemaining -= 1;
                     UpdateVegetablesRemaining();
-
-                    if (CarrotsRemaining == 0)
-                    {
-                        GameStatus = "LevelComplete";
-                        //Wait 1 second
-                        yield return new WaitForSeconds(1);
-                        LevelComplete.SetActive(true);
-                    }
 
                     Text text = SpeechText.GetComponent<Text>();
                     text.text = SteveQuotes.CarrotFound;
@@ -224,8 +238,16 @@ public class LevelController5x5 : MonoBehaviour
                     text.text = SteveQuotes.BananaFound;
                     StartCoroutine(FadeSpeechBubble());
                 }
+
+                if (BroccoliRemaining == 0 && CarrotsRemaining == 0)
+                    {
+                        GameStatus = "LevelComplete";
+                        //Wait 1 second
+                        yield return new WaitForSeconds(1);
+                        LevelComplete.SetActive(true);
+                    }
             }
-            else //If no carrot, then disappear tile
+            else //If no vegetable, then disappear tile
             {
                 SelectedTile.SetActive(false);
                 BoardObject.GetComponent<BoardModel>().moveVegetables();
@@ -250,6 +272,8 @@ public class LevelController5x5 : MonoBehaviour
     {
         CarrotsRemainingText = GameObject.Find("CarrotsRemainingText").GetComponent<Text>();
         CarrotsRemainingText.text = CarrotsRemaining.ToString();
+        BroccoliRemainingText = GameObject.Find("BroccoliRemainingText").GetComponent<Text>();
+        BroccoliRemainingText.text = BroccoliRemaining.ToString();
     }
 
     public void HighlightSquareVisible(bool square)
