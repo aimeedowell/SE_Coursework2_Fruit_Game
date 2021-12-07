@@ -21,6 +21,7 @@ public class LevelController3x3 : MonoBehaviour
     
     public GameObject HighlightSquare;
     public GameObject SpeechBubble;
+    public GameObject SpeechText;
     public Text CarrotsRemainingText;
     GameObject QuestionPopUpManager;
     GameObject QuestionGenerator;
@@ -96,8 +97,9 @@ public class LevelController3x3 : MonoBehaviour
             car.SetActive(false);
         }
 
-        //Make SpeechBubble visible
-        SpeechBubble.SetActive(true);
+        Text text = SpeechText.GetComponent<Text>();
+        text.text = SteveQuotes.TileSelection;
+        StartCoroutine(FadeSpeechBubble());
 
         //Update vegetables remaining
         UpdateVegetablesRemaining();
@@ -133,7 +135,6 @@ public class LevelController3x3 : MonoBehaviour
 
             //Make HighlightSquare visible
             HighlightSquare.SetActive(true);
-            SpeechBubble.SetActive(false);
 
             //Change GameStatus to "InQuestion"
             GameStatus = "InQuestion";
@@ -205,15 +206,29 @@ public class LevelController3x3 : MonoBehaviour
                         LevelComplete.SetActive(true);
 
                     }
+
+                    Text text = SpeechText.GetComponent<Text>();
+                    text.text = SteveQuotes.CarrotFound;
+                    StartCoroutine(FadeSpeechBubble());
                 }
             }
             else //If no carrot, then disappear tile
             {
                 SelectedTile.SetActive(false);
                 boardobject.GetComponent<BoardModel>().moveVegetables();
+                if (boardobject.GetComponent<BoardModel>().HasLevelFailed())
+                {
+                    GameStatus = "LevelFailed";                   
+                    Debug.Log ("Level Failed");
+                    //FUNCTIONALITY FOR LEVEL FAILED GOES HERE 
+                }
+                boardobject.GetComponent<BoardModel>().GetCarrotPosition();
+                Text text = SpeechText.GetComponent<Text>();
+                text.text = SteveQuotes.TileEmpty;
+                StartCoroutine(FadeSpeechBubble());
             }
         }
-        if (GameStatus != "LevelComplete")
+        if (GameStatus != "LevelComplete" || GameStatus != "LevelFailed")
             GameStatus = "TileSelection";
     }
 
@@ -224,6 +239,18 @@ public class LevelController3x3 : MonoBehaviour
     {
         CarrotsRemainingText = GameObject.Find("CarrotsRemainingText").GetComponent<Text>();
         CarrotsRemainingText.text = CarrotsRemaining.ToString();
+    }
+
+    IEnumerator FadeSpeechBubble()
+    {
+        SpeechBubble.SetActive(true);
+        yield return new WaitForSeconds(1);
+
+        SpeechBubble.GetComponent<Image>().CrossFadeAlpha(1.0f, 0f, false); //fade in
+        SpeechText.GetComponent<Text>().CrossFadeAlpha(1.0f, 0f, false); //fade in
+        SpeechBubble.GetComponent<Image>().CrossFadeAlpha(0.0f, 2.5f, false); //fade out
+        SpeechText.GetComponent<Text>().CrossFadeAlpha(0.0f, 2.5f, false); //fade out
+
     }
 }
 
