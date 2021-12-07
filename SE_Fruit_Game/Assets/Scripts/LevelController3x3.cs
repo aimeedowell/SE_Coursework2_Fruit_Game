@@ -10,6 +10,7 @@ public class LevelController3x3 : MonoBehaviour
     //Global variables
     public string GameStatus = "TileSelection";
     GameObject LevelComplete;
+    GameObject LevelFailed;
     
     public GameObject SelectedTile;
     public int[] SelectedTileCoords = new int[2];
@@ -87,6 +88,9 @@ public class LevelController3x3 : MonoBehaviour
         //Make Level Complete Sign invisible 
         LevelComplete = GameObject.Find("LevelComplete");
         LevelComplete.SetActive(false);
+        //Make Level Failed Sign invisible 
+        LevelFailed = GameObject.Find("LevelFailed");
+        LevelFailed.SetActive(false);
 
         QuestionPopUpManager = GameObject.Find("QuestionPopUp");
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
@@ -220,6 +224,7 @@ public class LevelController3x3 : MonoBehaviour
                 {
                     GameStatus = "LevelFailed";                   
                     Debug.Log ("Level Failed");
+                    LevelFailed.SetActive(true);
                     //FUNCTIONALITY FOR LEVEL FAILED GOES HERE 
                 }
                 boardobject.GetComponent<BoardModel>().GetCarrotPosition();

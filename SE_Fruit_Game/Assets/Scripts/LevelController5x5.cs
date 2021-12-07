@@ -9,6 +9,7 @@ public class LevelController5x5 : MonoBehaviour
     //Global variables
     public string GameStatus = "TileSelection";
     GameObject LevelComplete;
+    GameObject LevelFailed;
     
     GameObject SelectedTile;
     int[] SelectedTileCoords = new int[2];
@@ -45,6 +46,9 @@ public class LevelController5x5 : MonoBehaviour
         //Make Level Complete Sign invisible 
         LevelComplete = GameObject.Find("LevelComplete");
         LevelComplete.SetActive(false);
+        //Make Level Failed Sign invisible 
+        LevelFailed = GameObject.Find("LevelFailed");
+        LevelFailed.SetActive(false);
 
         QuestionPopUpManager = GameObject.Find("QuestionPopUp");
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().Start();
@@ -256,7 +260,7 @@ public class LevelController5x5 : MonoBehaviour
                 {
                     GameStatus = "LevelFailed";                   
                     Debug.Log ("Level Failed");
-                    //FUNCTIONALITY FOR LEVEL FAILED GOES HERE 
+                    LevelFailed.SetActive(true);
                 }
                 Text text = SpeechText.GetComponent<Text>();
                 text.text = SteveQuotes.TileEmpty;
