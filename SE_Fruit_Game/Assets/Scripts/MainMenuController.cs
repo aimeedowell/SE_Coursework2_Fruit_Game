@@ -8,6 +8,8 @@ public class MainMenuController : MonoBehaviour
     public void StartNewGameButtonClicked()
     {
         SceneManager.LoadScene("MathsLevel_1");
+        StaticVariables.Score = 0;
+        StaticVariables.Level = 1;
     }
 
     public void LoadGameButtonClicked()

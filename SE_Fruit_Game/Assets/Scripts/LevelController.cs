@@ -4,10 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class LevelController5x5 : MonoBehaviour
+public class LevelController : MonoBehaviour
 {
-    //Global variables
-    public string GameStatus = "TileSelection";
     GameObject LevelComplete;
     GameObject LevelFailed;
     GameObject MidLevelMenu;
@@ -15,6 +13,7 @@ public class LevelController5x5 : MonoBehaviour
     GameObject SelectedTile;
     int[] SelectedTileCoords = new int[2];
     Vector3 SelectedTilePos;
+
     public GameObject[] TileRow1 = new GameObject[5];
     public GameObject[] TileRow2 = new GameObject[5];
     public GameObject[] TileRow3 = new GameObject[5];
@@ -23,10 +22,10 @@ public class LevelController5x5 : MonoBehaviour
 
     GameObject Vegetable;
     public GameObject[] CarrotsArray = new GameObject[2];
-    int CarrotsRemaining = 2;
     public GameObject[] BroccoliArray = new GameObject[1];
-    int BroccoliRemaining = 1;
     public GameObject[] BananaArray = new GameObject[2];
+    int CarrotsRemaining = 2;
+    int BroccoliRemaining = 1;
     int BananasRemaining = 2;
     
     GameObject HighlightSquare;
@@ -39,10 +38,24 @@ public class LevelController5x5 : MonoBehaviour
     GameObject BoardObject;
 
     int startingScore;
-
+    int level;
+   
     public void ContinueButtonClicked()
     {
-        //SceneManager.LoadScene("MathsLevel_3"); // Move to Level 3
+
+        Debug.Log(level);
+
+        if (level == 1)
+        {
+            SceneManager.LoadScene("MathsLevel_2");     
+        }
+        else if (level == 2)
+        {
+            //SceneManager.LoadScene("MathsLevel_3"); // Move to Level 3
+        }
+
+        level += 1;
+        StaticVariables.Level = level;
     }
 
     public void RetryButtonClicked()
@@ -52,21 +65,28 @@ public class LevelController5x5 : MonoBehaviour
     }
     public void ExitButtonClicked()
     {
-       if (GameStatus !="LevelComplete" && GameStatus != "LevelFailed")
+       if (StaticVariables.GameStatus !="LevelComplete" && StaticVariables.GameStatus != "LevelFailed")
        {
             MidLevelMenu.SetActive(true);
-            GameStatus = "Paused";
+            StaticVariables.GameStatus = "Paused";
        }
     }
     public void ResumeButtonClicked()
     {
        MidLevelMenu.SetActive(false);
-       GameStatus = "TileSelection";
+       StaticVariables.GameStatus = "TileSelection";
     }
 
     public void ReturnButtonClicked()
     {
         SceneManager.LoadScene("MainMenu");
+        Reset();
+    }
+
+    private void Awake() 
+    {
+
+        StaticVariables.StartingLevel = 1;
     }
 
     // Start is called before the first frame update
@@ -90,19 +110,31 @@ public class LevelController5x5 : MonoBehaviour
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().UpdateScoreText();
 
+        StaticVariables.GameStatus = "TileSelection";
+        
+        if (StaticVariables.Level > StaticVariables.StartingLevel)
+            level = StaticVariables.Level;
+        else
+            level = StaticVariables.StartingLevel;
+
+
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
         {
             car.SetActive(false);
         }
-        foreach (GameObject ban in BananaArray)
+        if (level > 1)
         {
-            ban.SetActive(false);
+            foreach (GameObject ban in BananaArray)
+            {
+                ban.SetActive(false);
+            }
+            foreach (GameObject bro in BroccoliArray)
+            {
+                bro.SetActive(false);
+            }
         }
-        foreach (GameObject bro in BroccoliArray)
-        {
-            bro.SetActive(false);
-        }
+  
 
         Text text = SpeechText.GetComponent<Text>();
         text.text = SteveQuotes.TileSelection;
@@ -113,11 +145,11 @@ public class LevelController5x5 : MonoBehaviour
 
         BoardObject = new GameObject();
         BoardObject.AddComponent<BoardModel>();
-        BoardObject.GetComponent<BoardModel>().Level = 2;
+        BoardObject.GetComponent<BoardModel>().Level = level;
 
         QuestionGenerator = new GameObject();
         QuestionGenerator.AddComponent<ArithmeticQuestionGenerator>();
-        QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().Level = 2;
+        QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().Level = level;
 
         startingScore = StaticVariables.Score;
     }
@@ -125,14 +157,14 @@ public class LevelController5x5 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameStatus == "InQuestion")
+        if (StaticVariables.GameStatus == "InQuestion")
             OnQuestionInputChanged();
     }
     //If GameStatus is TileSelection, on click highlight the selected tile and update GameStatus, SelectedTile and SelectedTileCoords
     public void SelectTile(GameObject obj)
     {
         //Check if GameStatus is TileSelection
-        if (GameStatus == "TileSelection") 
+        if (StaticVariables.GameStatus == "TileSelection") 
         {
             //Set global SelectedTile to the selected tile and global SelectedTileCoords to the coordinates of the selected tile
             SelectedTile = obj;
@@ -148,9 +180,9 @@ public class LevelController5x5 : MonoBehaviour
             SelectedTileCoords = GetCoords(obj);
 
             //Change GameStatus to "InQuestion"
-            GameStatus = "InQuestion";
+            StaticVariables.GameStatus = "InQuestion";
 
-            if (GameStatus == "InQuestion")
+            if (StaticVariables.GameStatus == "InQuestion")
             {
                 //Execute Question
                 var question = QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().generateQuestion();
@@ -165,32 +197,57 @@ public class LevelController5x5 : MonoBehaviour
     {
         int[] objCoords = new int[2];
 
-        for (int i = 0; i < 5; i++)
+        if (level == 1)
         {
-            if (obj == TileRow1[i])
+            for (int i = 0; i < 3; i++)
             {
-                objCoords[0] = i;
-                objCoords[1] = 0;     
+
+                if (obj == TileRow1[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 0;     
+                }
+                else if (obj == TileRow2[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 1;     
+                }
+                else if (obj == TileRow3[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 2;     
+                }
             }
-            else if (obj == TileRow2[i])
+        }
+        else
+        {
+            for (int i = 0; i < 5; i++)
             {
-                objCoords[0] = i;
-                objCoords[1] = 1;     
-            }
-            else if (obj == TileRow3[i])
-            {
-                objCoords[0] = i;
-                objCoords[1] = 2;     
-            }
-            else if (obj == TileRow4[i])
-            {
-                objCoords[0] = i;
-                objCoords[1] = 3;     
-            }
-            else if (obj == TileRow5[i])
-            {
-                objCoords[0] = i;
-                objCoords[1] = 4;     
+                if (obj == TileRow1[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 0;     
+                }
+                else if (obj == TileRow2[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 1;     
+                }
+                else if (obj == TileRow3[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 2;     
+                }
+                else if (obj == TileRow4[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 3;     
+                }
+                else if (obj == TileRow5[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 4;     
+                }
             }
         }
         //Return the 2D array of simplified coordinates
@@ -206,7 +263,7 @@ public class LevelController5x5 : MonoBehaviour
 
             if (isCorrect)
             {
-                GameStatus = "QuestionCorrect";
+                StaticVariables.GameStatus = "QuestionCorrect";
                 StartCoroutine(OnQuestionCorrect());
             }
         }
@@ -219,7 +276,7 @@ public class LevelController5x5 : MonoBehaviour
         yield return new WaitForSeconds(1);
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
 
-        if (GameStatus == "QuestionCorrect")
+        if (StaticVariables.GameStatus == "QuestionCorrect")
         {
             QuestionPopUpManager.GetComponent<QuestionPopUpManager>().ResetQuestionInput();
             
@@ -243,9 +300,13 @@ public class LevelController5x5 : MonoBehaviour
                     BroccoliRemaining -= 1;
                     UpdateVegetablesRemaining();
 
-                    Text text = SpeechText.GetComponent<Text>();
-                    text.text = SteveQuotes.BroccoliFound;
-                    StartCoroutine(FadeSpeechBubble());
+                    if (CarrotsRemaining > 0)
+                    {
+                        Text text = SpeechText.GetComponent<Text>();
+                        text.text = SteveQuotes.BroccoliFound;
+                        StartCoroutine(FadeSpeechBubble());
+                    }
+                    
                 }
                 else if (VegetableFound == "Carrot")
                 {
@@ -255,12 +316,16 @@ public class LevelController5x5 : MonoBehaviour
                     Vegetable.transform.position = SelectedTilePos;
 
                     //Update carrots remaining text
+                    
                     CarrotsRemaining -= 1;
                     UpdateVegetablesRemaining();
+                    if (CarrotsRemaining > 0)
+                    {
+                        Text text = SpeechText.GetComponent<Text>();
+                        text.text = SteveQuotes.CarrotFound;
+                        StartCoroutine(FadeSpeechBubble());
+                    }
 
-                    Text text = SpeechText.GetComponent<Text>();
-                    text.text = SteveQuotes.CarrotFound;
-                    StartCoroutine(FadeSpeechBubble());
                 }
                 else if (VegetableFound == "Banana" && BananasRemaining > 0)
                 {
@@ -275,23 +340,45 @@ public class LevelController5x5 : MonoBehaviour
                     text.text = SteveQuotes.BananaFound;
                     StartCoroutine(FadeSpeechBubble());
                 }
-
-                if (BroccoliRemaining == 0 && CarrotsRemaining == 0)
+                if (level == 1)
+                {
+                    if (CarrotsRemaining == 0)
                     {
-                        GameStatus = "LevelComplete";
+                        StaticVariables.GameStatus = "LevelComplete";
+                        Text text = SpeechText.GetComponent<Text>();
+                        text.text = SteveQuotes.Free;
+                        StartCoroutine(FadeSpeechBubble());
                         //Wait 1 second
                         yield return new WaitForSeconds(1);
                         LevelComplete.SetActive(true);
                     }
+                }
+                else
+                {
+                    if (BroccoliRemaining == 0 && CarrotsRemaining == 0)
+                    {
+                        StaticVariables.GameStatus = "LevelComplete";
+                        Text text = SpeechText.GetComponent<Text>();
+                        text.text = SteveQuotes.Free;
+                        StartCoroutine(FadeSpeechBubble());
+                        //Wait 1 second
+                        yield return new WaitForSeconds(1);
+                        LevelComplete.SetActive(true);
+                    }
+                }
+   
             }
             else //If no vegetable, then disappear tile
             {
                 SelectedTile.SetActive(false);
-                BoardObject.GetComponent<BoardModel>().moveVegetables();
-                BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
-                if (BoardObject.GetComponent<BoardModel>().HasLevelFailed())
+                if (level > 1 )
                 {
-                    GameStatus = "LevelFailed";                   
+                    BoardObject.GetComponent<BoardModel>().moveVegetables();
+                    BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
+                }
+                if (level > 1 && BoardObject.GetComponent<BoardModel>().HasLevelFailed())
+                {
+                    StaticVariables.GameStatus = "LevelFailed";                   
                     Debug.Log ("Level Failed");
                     StaticVariables.Score = startingScore;
                     LevelFailed.SetActive(true);
@@ -301,8 +388,8 @@ public class LevelController5x5 : MonoBehaviour
                 StartCoroutine(FadeSpeechBubble());
             }
         }
-        if (GameStatus != "LevelComplete" || GameStatus != "LevelFailed")
-            GameStatus = "TileSelection";
+        if (StaticVariables.GameStatus != "LevelComplete" || StaticVariables.GameStatus != "LevelFailed")
+            StaticVariables.GameStatus = "TileSelection";
     }
 
     //Update the vegetables remaining table using the global variables
@@ -310,22 +397,15 @@ public class LevelController5x5 : MonoBehaviour
     {
         CarrotsRemainingText = GameObject.Find("CarrotsRemainingText").GetComponent<Text>();
         CarrotsRemainingText.text = CarrotsRemaining.ToString();
-        BroccoliRemainingText = GameObject.Find("BroccoliRemainingText").GetComponent<Text>();
-        BroccoliRemainingText.text = BroccoliRemaining.ToString();
+        if (level > 1)
+        {
+            BroccoliRemainingText = GameObject.Find("BroccoliRemainingText").GetComponent<Text>();
+            BroccoliRemainingText.text = BroccoliRemaining.ToString();
+        }   
     }
 
-    public void HighlightSquareVisible(bool square)
-    {
-        if (square)
-        {
-            HighlightSquare.SetActive(true);
-        }
-        else
-        {
-            HighlightSquare.SetActive(false);
-        }
-    }
-        IEnumerator FadeSpeechBubble()
+
+    IEnumerator FadeSpeechBubble()
     {
         SpeechBubble.SetActive(true);
         yield return new WaitForSeconds(1);
@@ -339,7 +419,7 @@ public class LevelController5x5 : MonoBehaviour
 
     void Reset() 
     {
-        GameStatus = "TileSelection";
+        StaticVariables.GameStatus = "TileSelection";
         CarrotsRemaining = 2;
         BananasRemaining = 2;
         BroccoliRemaining = 1;
@@ -354,31 +434,49 @@ public class LevelController5x5 : MonoBehaviour
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().UpdateScoreText();
 
+        level = StaticVariables.Level;
+
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
         {
             car.SetActive(false);
         }
-        foreach (GameObject ban in BananaArray)
+        if (level > 1)
         {
-            ban.SetActive(false);
-        }
-        foreach (GameObject broc in BroccoliArray)
-        {
-            broc.SetActive(false);
+            foreach (GameObject ban in BananaArray)
+            {
+                ban.SetActive(false);
+            }
+            foreach (GameObject broc in BroccoliArray)
+            {
+                broc.SetActive(false);
+            }
         }
 
-        for (int i = 0; i < 5; i++ )
+        if (level == 1)
         {
-            TileRow1[i].SetActive(true);
-            TileRow2[i].SetActive(true);
-            if (i != 2) // Avoid empty obj for strawberry
+            for (int i = 0; i < 3; i++ )
+            {
+                TileRow1[i].SetActive(true);
+                if (i != 1) // Avoid empty obj for strawberry
+                    TileRow2[i].SetActive(true);
                 TileRow3[i].SetActive(true);
-            TileRow4[i].SetActive(true);
-            TileRow5[i].SetActive(true);
- 
+            }
         }
-
+        else if (level == 2)
+        {
+            for (int i = 0; i < 5; i++ )
+            {
+                TileRow1[i].SetActive(true);
+                TileRow2[i].SetActive(true);
+                if (i != 2) // Avoid empty obj for strawberry
+                    TileRow3[i].SetActive(true);
+                TileRow4[i].SetActive(true);
+                TileRow5[i].SetActive(true);
+    
+            }
+        }
+ 
 
         Text text = SpeechText.GetComponent<Text>();
         text.text = SteveQuotes.TileSelection;
@@ -386,12 +484,11 @@ public class LevelController5x5 : MonoBehaviour
 
         BoardObject = new GameObject();
         BoardObject.AddComponent<BoardModel>();
-        BoardObject.GetComponent<BoardModel>().Level = 1;
+        BoardObject.GetComponent<BoardModel>().Level = level;
 
         QuestionGenerator = new GameObject();
         QuestionGenerator.AddComponent<ArithmeticQuestionGenerator>();
-        QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().Level = 1;
+        QuestionGenerator.GetComponent<ArithmeticQuestionGenerator>().Level = level;
         UpdateVegetablesRemaining();
     }
-
 }
