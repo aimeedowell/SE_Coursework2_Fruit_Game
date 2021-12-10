@@ -7,6 +7,7 @@ public static class SteveQuotes
     static string[] carrotFound = {"Hooray! You found Cruella!!!", "Yay, that's one carrot closer to being free!", "A carrot!!", "Be gone carrot."};
     static string[] broccoliFound = {"Hooray! You found a Boris!!!", "Yay, that's one broccoli closer to being free!", "A broccoli!!", "Be gone broccoli."};
     static string[] bananaFound = {"You found Barry!", "Barry will push the vegetables back a square!", "Yes! You found my friend Barry!", "Barry has given you more time to free me!"};
+    static string[] winnieFound = {"You found Winnie!", "Winnie has the power to remove a vegetable!", "Yes! You found my friend Winnie!", "Winnie has given you more time to free me!"};
     static string[] free = {"YAY! You saved me!!", "I'm freeeeee!", "Thank you!!! You got all the vegetables!"}; 
 
     public static string TileSelection
@@ -47,6 +48,14 @@ public static class SteveQuotes
         {
             int i = UnityEngine.Random.Range(0, bananaFound.Length -1);
             return bananaFound[i];
+        }
+    }
+        public static string WinnieFound
+    {
+        get 
+        {
+            int i = UnityEngine.Random.Range(0, winnieFound.Length -1);
+            return winnieFound[i];
         }
     }
     public static string Free
