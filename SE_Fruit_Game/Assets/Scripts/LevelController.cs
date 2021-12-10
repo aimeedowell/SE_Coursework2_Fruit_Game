@@ -36,6 +36,9 @@ public class LevelController : MonoBehaviour
     GameObject QuestionPopUpManager;
     GameObject QuestionGenerator;
     GameObject BoardObject;
+    GameObject Watermelon;
+
+    int consecutiveEmptyTiles = 0;  
 
     int startingScore;
     int level;
@@ -104,6 +107,9 @@ public class LevelController : MonoBehaviour
         //Make MidLevelMenu invisible 
         MidLevelMenu = GameObject.Find("MidLevelMenu");
         MidLevelMenu.SetActive(false);
+        //Make Winnie invisible 
+        Watermelon = GameObject.Find("WinnieTheWatermelon");
+        Watermelon.SetActive(false);
 
         QuestionPopUpManager = GameObject.Find("QuestionPopUp");
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().Start();
@@ -310,19 +316,22 @@ public class LevelController : MonoBehaviour
             else //If no vegetable, then disappear tile
             {
                 SelectedTile.SetActive(false);
-                if (level > 1 )
+                Text text = SpeechText.GetComponent<Text>();
+                text.text = SteveQuotes.TileEmpty;
+                consecutiveEmptyTiles += 1;
+                CheckConsecutiveEmptyTiles();
+                if (level > 1 && consecutiveEmptyTiles < 8)
                 {
                     BoardObject.GetComponent<BoardModel>().moveVegetables();
                     BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
                 }
+                
                 if (level > 1 && BoardObject.GetComponent<BoardModel>().HasLevelFailed())
                 {
                     ShowLevelFailed();
                 }
-                Text text = SpeechText.GetComponent<Text>();
-                text.text = SteveQuotes.TileEmpty;
-                StartCoroutine(FadeSpeechBubble());
             }
+            StartCoroutine(FadeSpeechBubble());
         }
         if (StaticVariables.GameStatus != "LevelComplete" || StaticVariables.GameStatus != "LevelFailed")
             StaticVariables.GameStatus = "TileSelection";
@@ -356,6 +365,7 @@ public class LevelController : MonoBehaviour
         CarrotsRemaining = 2;
         BananasRemaining = 2;
         BroccoliRemaining = 1;
+        consecutiveEmptyTiles = 0;
         StaticVariables.Score = startingScore;
         //Make Highlight Square invisible
         HighlightSquare.SetActive(false);
@@ -474,6 +484,74 @@ public class LevelController : MonoBehaviour
         text.text = SteveQuotes.BananaFound;
         StartCoroutine(FadeSpeechBubble());
     }
+
+    void CheckConsecutiveEmptyTiles()
+    {
+        if (consecutiveEmptyTiles > 3)
+        {
+            Watermelon.SetActive(true);
+            Watermelon.transform.position = SelectedTilePos;
+            bool foundCarrot = false;
+ 
+            while (!foundCarrot)
+            {
+                if (level == 1)
+                {
+                    if (FindACarrotOnRow(TileRow1))
+                        foundCarrot = true;
+                    else if (FindACarrotOnRow(TileRow2))
+                        foundCarrot = true;
+                    else if (FindACarrotOnRow(TileRow3))
+                        foundCarrot = true;
+                }
+                else
+                {
+                    if (FindACarrotOnRow(TileRow1))
+                        foundCarrot = true;
+                    else if (FindACarrotOnRow(TileRow2))
+                        foundCarrot = true;
+                    else if (FindACarrotOnRow(TileRow3))
+                        foundCarrot = true;
+                    else if (FindACarrotOnRow(TileRow4))
+                        foundCarrot = true;
+                    else if (FindACarrotOnRow(TileRow5))
+                        foundCarrot = true;
+                }
+            }
+            RemoveCarrotFromBoard();
+            if (level == 1)
+            {
+                if (CarrotsRemaining == 0)
+                    StartCoroutine(ShowLevelComplete());
+            }
+            else
+            {
+                if (BroccoliRemaining == 0 && CarrotsRemaining == 0)
+                    StartCoroutine(ShowLevelComplete()); 
+            }
+            Text text = SpeechText.GetComponent<Text>();
+            text.text = SteveQuotes.WinnieFound;
+            consecutiveEmptyTiles = 0;
+        }
+    }
+
+    bool FindACarrotOnRow(GameObject[] row)
+    {
+        bool hasBeenFound = false;
+        foreach(GameObject obj in row)
+        {
+            SelectedTileCoords = GetCoords(obj);
+            string isCarrot = BoardObject.GetComponent<BoardModel>().makeGuess(SelectedTileCoords[0], SelectedTileCoords[1]);
+            if (isCarrot == "Carrot")
+            {
+                SelectedTilePos = obj.transform.position;
+                obj.SetActive(false);
+                return hasBeenFound = true;
+            }
+        }
+        return hasBeenFound;
+    }
+
     IEnumerator ShowLevelComplete()
     {
         StaticVariables.GameStatus = "LevelComplete";
