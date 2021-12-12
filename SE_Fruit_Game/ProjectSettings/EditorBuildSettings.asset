@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MathsLevel_2.unity
     guid: 23491bebb20a24698ab98f2b49d819d7
+  - enabled: 1
+    path: Assets/Scenes/MathsLevel_3.unity
+    guid: f71d35262789f42c0a1c3a1431af130e
   m_configObjects: {}

@@ -54,7 +54,7 @@ public class LevelController : MonoBehaviour
         }
         else if (level == 2)
         {
-            //SceneManager.LoadScene("MathsLevel_3"); // Move to Level 3
+            SceneManager.LoadScene("MathsLevel_3"); 
         }
 
         level += 1;
@@ -225,7 +225,7 @@ public class LevelController : MonoBehaviour
                 }
             }
         }
-        else
+        else if (level == 2)
         {
             for (int i = 0; i < 5; i++)
             {
@@ -255,6 +255,27 @@ public class LevelController : MonoBehaviour
                     objCoords[1] = 4;     
                 }
             }
+        }
+        else
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                if (obj == TileRow1[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 0;     
+                }
+                else if (obj == TileRow2[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 1;     
+                }
+                else if (obj == TileRow3[i])
+                {
+                    objCoords[0] = i;
+                    objCoords[1] = 2;     
+                }
+            }  
         }
         //Return the 2D array of simplified coordinates
         return objCoords;
@@ -419,7 +440,16 @@ public class LevelController : MonoBehaviour
     
             }
         }
- 
+        else if (level == 3)
+        {
+            for (int i = 0; i < 7; i++ )
+            {
+                TileRow1[i].SetActive(true);
+                if (i != 3) // Avoid empty obj for strawberry
+                    TileRow2[i].SetActive(true);
+                TileRow3[i].SetActive(true);    
+            }
+        }
 
         Text text = SpeechText.GetComponent<Text>();
         text.text = SteveQuotes.TileSelection;

@@ -34,8 +34,11 @@ public class BoardModel : MonoBehaviour
         
         if (getGridSize() == 3) {
             this.gridBoard[1,1] = "Strawberry";
-        } else {
+        } 
+        else if(getGridSize() == 5) {
             this.gridBoard[2,2] = "Strawberry";
+        }else {
+            this.gridBoard[3,1] = "Strawberry";
         }
         
 
@@ -129,6 +132,9 @@ public class BoardModel : MonoBehaviour
         int steveLocation = 1; 
         if (Level == 2) {
             steveLocation = 2;
+        }
+        if (Level == 3) {
+            steveLocation = 3;
         }
         double dist = System.Math.Sqrt(System.Math.Pow(xCoord - steveLocation, 2)+ System.Math.Pow(yCoord - steveLocation, 2));
         return dist;
@@ -320,14 +326,19 @@ public class BoardModel : MonoBehaviour
             {
                 if (this.gridBoard[i,j] == "Carrot")
                 {
-                    if (getGridSize() == 3)
+                    if (level == 1)
                     {
                         if (i == 1 && j == 1) //3X3 board 
                             levelFailed = true;
                     }
-                    else 
+                    else if (level == 2)
                     {
                         if (i == 2 && j == 2) // 5X5 board 
+                            levelFailed = true;
+                    }
+                    else 
+                    {
+                        if (i == 3 && j == 1) // 7X3 board 
                             levelFailed = true;
                     }
                     currentCarrotPositions.Add(i);
