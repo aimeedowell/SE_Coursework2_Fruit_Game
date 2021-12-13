@@ -16,10 +16,17 @@ public class NewTestScript
     }
 
     [Test]
-    public void getCorrectGridSizeTest() {
+    public void getCorrectGridSizeXTest() {
         BoardModel boardModel = new BoardModel();
-        boardModel.Level = 2; 
-        Assert.AreEqual(5, boardModel.getGridSize());
+        boardModel.Level = 3; 
+        Assert.AreEqual(7, boardModel.getGridSizeX());
+    }
+
+    [Test]
+    public void getCorrectGridSizeYTest() {
+        BoardModel boardModel = new BoardModel();
+        boardModel.Level = 3; 
+        Assert.AreEqual(3, boardModel.getGridSizeY());
     }
 
     [Test]

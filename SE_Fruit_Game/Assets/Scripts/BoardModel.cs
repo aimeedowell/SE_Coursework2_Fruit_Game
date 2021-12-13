@@ -29,13 +29,13 @@ public class BoardModel : MonoBehaviour
 
     private void initialiseBoard()
     {
-        gridBoard = new string[getGridSize(), getGridSize()]; 
+        gridBoard = new string[getGridSizeX(), getGridSizeY()]; 
         levelFailed = false;
         
-        if (getGridSize() == 3) {
+        if (getGridSizeX() == 3) {
             this.gridBoard[1,1] = "Strawberry";
         } 
-        else if(getGridSize() == 5) {
+        else if(getGridSizeX() == 5) {
             this.gridBoard[2,2] = "Strawberry";
         }else {
             this.gridBoard[3,1] = "Strawberry";
@@ -45,7 +45,7 @@ public class BoardModel : MonoBehaviour
         for (int carrot = 0; carrot < 2; carrot++){
             addCarrot();
         }
-        if (getGridSize() > 3)
+        if (level > 1)
         {
             for (int broc = 0; broc < 2; broc++){
                 addBroccoli();
@@ -56,15 +56,32 @@ public class BoardModel : MonoBehaviour
         }
     }
 
-    public int getGridSize(){
+    public int getGridSizeX()
+    {
         int gridSize = 0;
         
         if (this.level == 1) {
             gridSize = 3;
-        } else {
+        } 
+        else if (this.level == 2) {
             gridSize = 5;
         }
+        else {
+            gridSize = 7;
+        }
+        return gridSize;
+    }
 
+    public int getGridSizeY()
+    {
+        int gridSize = 0;
+        
+        if (this.level == 1 || this.level == 3) {
+            gridSize = 3;
+        } 
+        else {
+            gridSize = 5;
+        }
         return gridSize;
     }
 
@@ -79,8 +96,8 @@ public class BoardModel : MonoBehaviour
         System.Random rnd = new System.Random();
 
         while (!foundCell) {
-            int firstNum = rnd.Next(getGridSize());
-            int secondNum = rnd.Next(getGridSize());
+            int firstNum = rnd.Next(getGridSizeX());
+            int secondNum = rnd.Next(getGridSizeY());
 
             if (this.gridBoard[firstNum, secondNum] == null && getDistance(firstNum, secondNum) > minReqDistance) {
                 this.gridBoard[firstNum, secondNum] = "Carrot";
@@ -99,8 +116,8 @@ public class BoardModel : MonoBehaviour
         System.Random rnd = new System.Random();
 
         while (!foundCell) {
-            int firstNum = rnd.Next(getGridSize());
-            int secondNum = rnd.Next(getGridSize());
+            int firstNum = rnd.Next(getGridSizeX());
+            int secondNum = rnd.Next(getGridSizeY());
 
             if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot") 
             {
@@ -117,8 +134,8 @@ public class BoardModel : MonoBehaviour
         System.Random rnd = new System.Random();
 
         while (!foundCell) {
-            int firstNum = rnd.Next(getGridSize());
-            int secondNum = rnd.Next(getGridSize());
+            int firstNum = rnd.Next(getGridSizeX());
+            int secondNum = rnd.Next(getGridSizeY());
 
             if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot" && getDistance(firstNum, secondNum) > minReqDistance) {
                 this.gridBoard[firstNum, secondNum] = "Broccoli";
@@ -129,14 +146,17 @@ public class BoardModel : MonoBehaviour
     }
 
     public double getDistance(int xCoord, int yCoord){
-        int steveLocation = 1; 
+        int steveLocationX = 1; 
+        int steveLocationY = 1; 
         if (Level == 2) {
-            steveLocation = 2;
+            steveLocationX = 2;
+            steveLocationY = 2;
         }
         if (Level == 3) {
-            steveLocation = 3;
+            steveLocationX = 3;
+            steveLocationY = 1;
         }
-        double dist = System.Math.Sqrt(System.Math.Pow(xCoord - steveLocation, 2)+ System.Math.Pow(yCoord - steveLocation, 2));
+        double dist = System.Math.Sqrt(System.Math.Pow(xCoord - steveLocationX, 2)+ System.Math.Pow(yCoord - steveLocationY, 2));
         return dist;
     }
 
@@ -189,16 +209,17 @@ public class BoardModel : MonoBehaviour
 
     // Movement of Vegetables
     public int moveVegetables() {
-        int gridSize = getGridSize();
+        int gridSizeX = getGridSizeX();
+        int gridSizeY = getGridSizeY();
         List <string> RepositionedCarrots = new List<string>();
         previousCarrotPositions.Clear();
         
 
         // gridBoard = gridBoard;        // This is the grid where carrots are updated
         //int[,] positionToIgnore;
-        for (int i = 0; i < gridSize; i = i + 1) {
+        for (int i = 0; i < gridSizeX; i = i + 1) {
         
-            for(int j = 0; j < gridSize; j = j + 1){
+            for(int j = 0; j < gridSizeY; j = j + 1){
 
                 string CarrotCheck = i.ToString() + j.ToString();
                 
@@ -206,7 +227,7 @@ public class BoardModel : MonoBehaviour
                     
                     previousCarrotPositions.Add(i);
                     previousCarrotPositions.Add(j);
-                    var newPos  = GetNewCarrotPosition(gridSize,i,j);
+                    var newPos  = GetNewCarrotPosition(i, j);
                     RepositionedCarrots.Add(newPos);         
                     GetCarrotPosition();
                 }
@@ -216,7 +237,7 @@ public class BoardModel : MonoBehaviour
     }
 
 
-    public string GetNewCarrotPosition(int gridSize, int xcor, int ycor){
+    public string GetNewCarrotPosition(int xcor, int ycor){
 
         Boolean CarrotPositioned = false;
         int CarrotMovement = 1;
@@ -320,9 +341,9 @@ public class BoardModel : MonoBehaviour
     public List<int> GetCarrotPosition()
     {
         currentCarrotPositions.Clear();
-        for (int i = 0; i < getGridSize(); i = i + 1) 
+        for (int i = 0; i < getGridSizeX(); i = i + 1) 
         {
-            for (int j = 0; j < getGridSize(); j = j + 1)
+            for (int j = 0; j < getGridSizeY(); j = j + 1)
             {
                 if (this.gridBoard[i,j] == "Carrot")
                 {
