@@ -9,6 +9,7 @@ public class LevelController : MonoBehaviour
     GameObject LevelComplete;
     GameObject LevelFailed;
     GameObject MidLevelMenu;
+    GameObject QuitToMenuWarning;
     
     GameObject SelectedTile;
     int[] SelectedTileCoords = new int[2];
@@ -82,6 +83,18 @@ public class LevelController : MonoBehaviour
 
     public void ReturnButtonClicked()
     {
+        MidLevelMenu.SetActive(false);
+        QuitToMenuWarning.SetActive(true);
+    }
+
+    public void QuitWithoutSavingClicked()
+    {
+        SceneManager.LoadScene("MainMenu");
+        Reset();
+    }
+
+    public void SaveAndQuitClicked()
+    {
         SceneManager.LoadScene("MainMenu");
         Reset();
     }
@@ -107,6 +120,9 @@ public class LevelController : MonoBehaviour
         //Make MidLevelMenu invisible 
         MidLevelMenu = GameObject.Find("MidLevelMenu");
         MidLevelMenu.SetActive(false);
+        //Make QuitToMenuWarning invisible 
+        QuitToMenuWarning = GameObject.Find("MidLevelQuitWarning");
+        QuitToMenuWarning.SetActive(false);
         //Make Winnie invisible 
         Watermelon = GameObject.Find("WinnieTheWatermelon");
         Watermelon.SetActive(false);
@@ -394,6 +410,8 @@ public class LevelController : MonoBehaviour
         LevelComplete.SetActive(false);
         //Make Level Failed Sign invisible 
         LevelFailed.SetActive(false);
+        MidLevelMenu.SetActive(false);
+        QuitToMenuWarning.SetActive(false);
 
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().HideQuestionPopUp();
         QuestionPopUpManager.GetComponent<QuestionPopUpManager>().UpdateScoreText();
