@@ -7,8 +7,8 @@ using System.Linq;
 public class BoardModel : MonoBehaviour
 {
     private string[,] gridBoard; 
-    List<int> currentCarrotPositions = new List<int>();
-    List<int> previousCarrotPositions = new List<int>();
+    List<int> currentVegPositions = new List<int>();
+    List<int> previousVegPositions = new List<int>();
     private int level;
     private bool levelFailed = false;
 
@@ -102,8 +102,8 @@ public class BoardModel : MonoBehaviour
             if (this.gridBoard[firstNum, secondNum] == null && getDistance(firstNum, secondNum) > minReqDistance) {
                 this.gridBoard[firstNum, secondNum] = "Carrot";
                 Debug.Log("Carrot: x is " + firstNum + " and y is" + secondNum);  
-                previousCarrotPositions.Add(firstNum);
-                previousCarrotPositions.Add(secondNum);
+                previousVegPositions.Add(firstNum);
+                previousVegPositions.Add(secondNum);
                 foundCell = true;
             } 
         }
@@ -140,6 +140,8 @@ public class BoardModel : MonoBehaviour
             if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot" && getDistance(firstNum, secondNum) > minReqDistance
                 && ((firstNum - secondNum)%2) == 0) {
                 this.gridBoard[firstNum, secondNum] = "Broccoli";
+                previousVegPositions.Add(firstNum);
+                previousVegPositions.Add(secondNum);
                 Debug.Log("Broccoli: x is " + firstNum + " and y is" + secondNum);  
                 foundCell = true;
             } 
@@ -213,7 +215,7 @@ public class BoardModel : MonoBehaviour
         int gridSizeX = getGridSizeX();
         int gridSizeY = getGridSizeY();
         List <string> RepositionedVegetables = new List<string>();
-        previousCarrotPositions.Clear();
+        previousVegPositions.Clear();
         
 
         for (int i = 0; i < gridSizeX; i = i + 1) {     
@@ -224,16 +226,19 @@ public class BoardModel : MonoBehaviour
                 
                 if(this.gridBoard[i,j] == "Carrot" && !RepositionedVegetables.Contains(VegetableCheck)){
                     
-                    previousCarrotPositions.Add(i);
-                    previousCarrotPositions.Add(j);
+                    previousVegPositions.Add(i);
+                    previousVegPositions.Add(j);
                     var newPos  = GetNewCarrotPosition(i, j);
                     RepositionedVegetables.Add(newPos);         
-                    GetCarrotPosition();
+                    GetVegetablePosition();
+                    Debug.Log("Carrot: x is " + i + " and y is" + j);
                 }
-                if(this.gridBoard[i,j] == "Broccoli" && !RepositionedVegetables.Contains(VegetableCheck)){
+                else if(this.gridBoard[i,j] == "Broccoli" && !RepositionedVegetables.Contains(VegetableCheck)){
                     
                     var newPos  = GetNewBroccoliPosition(i, j);
-                    RepositionedVegetables.Add(newPos);         
+                    RepositionedVegetables.Add(newPos); 
+                    GetVegetablePosition();
+                    Debug.Log("Broccoli: x is " + i + " and y is" + j);      
                 }
             }
         }
@@ -327,10 +332,6 @@ public class BoardModel : MonoBehaviour
         }
         return ReturnString;
     }
-
-
-
-
 
     public string GetNewBroccoliPosition(int xcor, int ycor){
 
@@ -426,14 +427,14 @@ public class BoardModel : MonoBehaviour
     }
 
 
-    public List<int> GetCarrotPosition()
+    public List<int> GetVegetablePosition()
     {
-        currentCarrotPositions.Clear();
+        currentVegPositions.Clear();
         for (int i = 0; i < getGridSizeX(); i = i + 1) 
         {
             for (int j = 0; j < getGridSizeY(); j = j + 1)
             {
-                if (this.gridBoard[i,j] == "Carrot")
+                if (this.gridBoard[i,j] == "Carrot" || this.gridBoard[i,j] == "Broccoli")
                 {
                     if (level == 1)
                     {
@@ -450,30 +451,37 @@ public class BoardModel : MonoBehaviour
                         if (i == 3 && j == 1) // 7X3 board 
                             levelFailed = true;
                     }
-                    currentCarrotPositions.Add(i);
-                    currentCarrotPositions.Add(j);
-                    Debug.Log("Carrot: x is " + i + " and y is" + j);
+                    currentVegPositions.Add(i);
+                    currentVegPositions.Add(j);
                 }
             }
         }
-        return currentCarrotPositions;
+        return currentVegPositions;
     }
 
-    private List<int> GetPreviousCarrotPosition()
+    private List<int> GetPreviousVegPosition()
     {
-        return previousCarrotPositions;
+        return previousVegPositions;
     }
 
-    public void PushCarrotsBackOneMove()
+    public void PushVegetablesBackOneMove()
     {
-        for (int i = 0; i < currentCarrotPositions.Count(); i+=2)
+        for (int i = 0; i < currentVegPositions.Count(); i+=2)
         {
-            int firstNum = GetCarrotPosition()[i];
-            int secondNum = GetCarrotPosition()[i+1];
-            int newFirstNum = GetPreviousCarrotPosition()[i];
-            int newSecondNum = GetPreviousCarrotPosition()[i+1];
-            this.gridBoard[firstNum,secondNum] = "null";
-            this.gridBoard[newFirstNum, newSecondNum] = "Carrot";
+            int firstNum = GetVegetablePosition()[i];
+            int secondNum = GetVegetablePosition()[i+1];
+            int newFirstNum = GetPreviousVegPosition()[i];
+            int newSecondNum = GetPreviousVegPosition()[i+1];
+            if (this.gridBoard[firstNum,secondNum] == "Carrot")
+            {
+                this.gridBoard[firstNum,secondNum] = "null";
+                this.gridBoard[newFirstNum, newSecondNum] = "Carrot";
+            }
+            else if (this.gridBoard[firstNum,secondNum] == "Broccoli")
+            {
+                this.gridBoard[firstNum,secondNum] = "null";
+                this.gridBoard[newFirstNum, newSecondNum] = "Broccoli";
+            }
         }
     }
 
