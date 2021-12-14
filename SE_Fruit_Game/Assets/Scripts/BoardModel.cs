@@ -137,7 +137,8 @@ public class BoardModel : MonoBehaviour
             int firstNum = rnd.Next(getGridSizeX());
             int secondNum = rnd.Next(getGridSizeY());
 
-            if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot" && getDistance(firstNum, secondNum) > minReqDistance) {
+            if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot" && getDistance(firstNum, secondNum) > minReqDistance
+                && ((firstNum - secondNum)%2) == 0) {
                 this.gridBoard[firstNum, secondNum] = "Broccoli";
                 Debug.Log("Broccoli: x is " + firstNum + " and y is" + secondNum);  
                 foundCell = true;
@@ -211,25 +212,28 @@ public class BoardModel : MonoBehaviour
     public int moveVegetables() {
         int gridSizeX = getGridSizeX();
         int gridSizeY = getGridSizeY();
-        List <string> RepositionedCarrots = new List<string>();
+        List <string> RepositionedVegetables = new List<string>();
         previousCarrotPositions.Clear();
         
 
-        // gridBoard = gridBoard;        // This is the grid where carrots are updated
-        //int[,] positionToIgnore;
-        for (int i = 0; i < gridSizeX; i = i + 1) {
+        for (int i = 0; i < gridSizeX; i = i + 1) {     
         
             for(int j = 0; j < gridSizeY; j = j + 1){
 
-                string CarrotCheck = i.ToString() + j.ToString();
+                string VegetableCheck = i.ToString() + j.ToString();            // To not change the position of repositioned vegetables
                 
-                if(this.gridBoard[i,j] == "Carrot" && !RepositionedCarrots.Contains(CarrotCheck)){
+                if(this.gridBoard[i,j] == "Carrot" && !RepositionedVegetables.Contains(VegetableCheck)){
                     
                     previousCarrotPositions.Add(i);
                     previousCarrotPositions.Add(j);
                     var newPos  = GetNewCarrotPosition(i, j);
-                    RepositionedCarrots.Add(newPos);         
+                    RepositionedVegetables.Add(newPos);         
                     GetCarrotPosition();
+                }
+                if(this.gridBoard[i,j] == "Broccoli" && !RepositionedVegetables.Contains(VegetableCheck)){
+                    
+                    var newPos  = GetNewBroccoliPosition(i, j);
+                    RepositionedVegetables.Add(newPos);         
                 }
             }
         }
@@ -246,7 +250,7 @@ public class BoardModel : MonoBehaviour
         
         while(!CarrotPositioned){ 
             
-            
+            // To get the distance of carrots after movement
             double up =    getDistance(xcor, ycor) - getDistance(xcor - CarrotMovement, ycor);
             double down =  getDistance(xcor, ycor) - getDistance(xcor + CarrotMovement, ycor);
             double left =  getDistance(xcor, ycor) - getDistance(xcor , ycor - CarrotMovement);
@@ -256,55 +260,41 @@ public class BoardModel : MonoBehaviour
 
             System.Random rnd = new System.Random();
 
-            if(up >= 0 && this.gridBoard[xcor - CarrotMovement, ycor] == null){
+            // Selecting only valid movements
+            if(up >= 0 && (this.gridBoard[xcor - CarrotMovement, ycor] == null || this.gridBoard[xcor - CarrotMovement, ycor] == "Strawberry")){
                 Movements.Add(new Tuple<double, string, int>(up, "up",rnd.Next(100)));   
             }
-            else if(up >= 0 && (this.gridBoard[xcor - CarrotMovement, ycor] != "Carrot" || 
-                           this.gridBoard[xcor - CarrotMovement, ycor] != "Carrot"|| 
-                           this.gridBoard[xcor - CarrotMovement, ycor] != "null")) {
-                Movements.Add(new Tuple<double, string, int>(up, "up",rnd.Next(100)));
-            }
 
 
-            if(down >= 0 && this.gridBoard[xcor + CarrotMovement, ycor] == null){
+            if(down >= 0 && (this.gridBoard[xcor + CarrotMovement, ycor] == null || this.gridBoard[xcor + CarrotMovement, ycor] == "Strawberry")){
                 Movements.Add(new Tuple<double, string, int>(down, "down",rnd.Next(100)));
             }
-            else if(down >= 0 && (this.gridBoard[xcor + CarrotMovement, ycor] != "Carrot" || 
-                           this.gridBoard[xcor + CarrotMovement, ycor] != "Carrot"|| 
-                           this.gridBoard[xcor + CarrotMovement, ycor] !="null")) {   
-            Movements.Add(new Tuple<double, string, int>(down, "down",rnd.Next(100)));}
 
-
-            if(left >= 0 && this.gridBoard[xcor , ycor - CarrotMovement] == null){
+            if(left >= 0 && (this.gridBoard[xcor , ycor - CarrotMovement] == null || this.gridBoard[xcor , ycor - CarrotMovement] == "Strawberry")){
                 Movements.Add(new Tuple<double, string, int>(left, "left",rnd.Next(100)));
-            }            
-            else if(left >= 0 && (this.gridBoard[xcor , ycor - CarrotMovement] != "Carrot" || 
-                           this.gridBoard[xcor , ycor - CarrotMovement] != "Carrot"|| 
-                           this.gridBoard[xcor , ycor - CarrotMovement] !="null")) {  
-                Movements.Add(new Tuple<double, string, int>(left, "left",rnd.Next(100)));}
-
-
-            if(right >= 0 && this.gridBoard[xcor , ycor + CarrotMovement] == null){
+            }        
+            
+            if(right >= 0 && (this.gridBoard[xcor , ycor + CarrotMovement] == null || this.gridBoard[xcor , ycor + CarrotMovement] == "Strawberry")){
                 Movements.Add(new Tuple<double, string, int>(right, "right",rnd.Next(100)));
-            }            
-            else if(right >= 0 && (this.gridBoard[xcor , ycor + CarrotMovement] != "Carrot" || 
-                           this.gridBoard[xcor , ycor + CarrotMovement] != "Carrot"|| 
-                           this.gridBoard[xcor , ycor + CarrotMovement] != "null")) {
-                Movements.Add(new Tuple<double, string, int>(right, "right",rnd.Next(100)));}
+            }    
 
-
-
-            if (Movements.Count == 0){
-                CarrotMovement = CarrotMovement + 1;
+            // Set the max jump limit of vegetable according to the level
+            if (Movements.Count == 0 && CarrotMovement > this.level){
+                CarrotPositioned = true;
+            }
+            else if (Movements.Count == 0){
+                CarrotMovement = CarrotMovement + 1;            // increasing carrot jump limit if there are no legal moves left
                 int[,] PositionIgnore = {{-1,-1}};
             }
             else {
                 Movements.Sort((x, y) => {
                     int result = y.Item1.CompareTo(x.Item1);
-                    return result == 0 ? y.Item3.CompareTo(x.Item3) : result;
+                    return result == 0 ? y.Item3.CompareTo(x.Item3) : result;               // sorting the list according to best move - i.e. the max change in distance between veg and fruit
                 });
 
                 var firstElement = Movements.First();
+
+                // Selecting the best movement
 
                 if(firstElement.Item2 == "up"){
                 this.gridBoard[xcor - CarrotMovement, ycor] = "Carrot";
@@ -337,6 +327,104 @@ public class BoardModel : MonoBehaviour
         }
         return ReturnString;
     }
+
+
+
+
+
+    public string GetNewBroccoliPosition(int xcor, int ycor){
+
+        Boolean BroccoliPositioned = false;
+        int BroccoliMovement = 1;
+        string ReturnString = ""; 
+
+        
+        while(!BroccoliPositioned){ 
+            
+            // To get the distance of brocolli after movement
+            
+            double up_left    = getDistance(xcor, ycor) - getDistance(xcor - BroccoliMovement, ycor - BroccoliMovement);
+            double up_right   = getDistance(xcor, ycor) - getDistance(xcor + BroccoliMovement, ycor - BroccoliMovement);
+            double down_left  = getDistance(xcor, ycor) - getDistance(xcor - BroccoliMovement, ycor + BroccoliMovement);
+            double down_right = getDistance(xcor, ycor) - getDistance(xcor + BroccoliMovement, ycor + BroccoliMovement);
+            
+            List<Tuple<double, string, int>> Movements = new List<Tuple<double, string, int>>();
+
+            System.Random rnd = new System.Random();
+
+            // To select only valid movement of broccoli
+            if(up_left >= 0 && (this.gridBoard[xcor - BroccoliMovement, ycor - BroccoliMovement] == null || this.gridBoard[xcor - BroccoliMovement, ycor - BroccoliMovement] == "Strawberry")){
+                Movements.Add(new Tuple<double, string, int>(up_left, "up_left",rnd.Next(100)));   
+            }
+
+
+            if(up_right >= 0 && (this.gridBoard[xcor + BroccoliMovement, ycor - BroccoliMovement] == null || this.gridBoard[xcor + BroccoliMovement, ycor - BroccoliMovement] == "Strawberry")){
+                Movements.Add(new Tuple<double, string, int>(up_right, "up_right",rnd.Next(100)));
+            }
+
+            if(down_left >= 0 && (this.gridBoard[xcor - BroccoliMovement, ycor + BroccoliMovement] == null || this.gridBoard[xcor - BroccoliMovement, ycor + BroccoliMovement] == "Strawberry")){
+                Movements.Add(new Tuple<double, string, int>(down_left, "down_left",rnd.Next(100)));
+            }        
+            
+            if(down_right >= 0 && (this.gridBoard[xcor + BroccoliMovement, ycor + BroccoliMovement] == null || this.gridBoard[xcor + BroccoliMovement, ycor + BroccoliMovement] == "Strawberry")){
+                Movements.Add(new Tuple<double, string, int>(down_right, "down_right",rnd.Next(100)));
+            }    
+
+
+            // Set the max jump limit of vegetable according to the level
+
+            if (Movements.Count == 0 && BroccoliMovement >= this.level){
+                BroccoliMovement = BroccoliMovement + 1;
+                int[,] PositionIgnore = {{-1,-1}};
+                BroccoliPositioned = true;
+            }
+            else if (Movements.Count == 0){
+                BroccoliMovement = BroccoliMovement + 1;
+                int[,] PositionIgnore = {{-1,-1}};
+            }            
+            else {
+                Movements.Sort((x, y) => {
+                    int result = y.Item1.CompareTo(x.Item1);
+                    return result == 0 ? y.Item3.CompareTo(x.Item3) : result;     // sorting the list according to best move - i.e. the max change in distance between veg and fruit
+                });
+
+                var firstElement = Movements.First();
+
+
+
+                // Selecting the best movement
+                if(firstElement.Item2 == "up_left"){
+                this.gridBoard[xcor - BroccoliMovement, ycor - BroccoliMovement] = "Broccoli";
+                ReturnString = (xcor - BroccoliMovement).ToString() + (ycor - BroccoliMovement).ToString(); 
+
+                
+                }
+
+                if(firstElement.Item2 == "up_right"){
+                this.gridBoard[xcor + BroccoliMovement, ycor - BroccoliMovement] = "Broccoli";
+                ReturnString = (xcor + BroccoliMovement).ToString() + (ycor - BroccoliMovement).ToString();
+                
+                }
+
+                if(firstElement.Item2 == "down_left"){
+                this.gridBoard[xcor - BroccoliMovement, ycor + BroccoliMovement] = "Broccoli";
+                ReturnString = (xcor - BroccoliMovement).ToString() + (ycor + BroccoliMovement).ToString();
+                
+                }
+
+                if(firstElement.Item2 == "down_right"){
+                this.gridBoard[xcor + BroccoliMovement, ycor + BroccoliMovement] = "Broccoli";
+                ReturnString = (xcor + BroccoliMovement).ToString() + (ycor + BroccoliMovement).ToString();
+               
+                }
+                this.gridBoard[xcor, ycor] = "null";
+                BroccoliPositioned = true;
+                
+            }
+        }
+        return ReturnString;
+    }
+
 
     public List<int> GetCarrotPosition()
     {
