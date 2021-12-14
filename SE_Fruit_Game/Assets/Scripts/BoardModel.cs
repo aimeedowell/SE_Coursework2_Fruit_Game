@@ -41,17 +41,21 @@ public class BoardModel : MonoBehaviour
             this.gridBoard[3,1] = "Strawberry";
         }
         
-
-        for (int carrot = 0; carrot < 2; carrot++){
-            addCarrot();
-        }
         if (level > 1)
         {
-            for (int broc = 0; broc < 2; broc++){
+            for (int broc = 0; broc < 1; broc++){
                 addBroccoli();
+            }
+            for (int carrot = 0; carrot < 2; carrot++){
+                addCarrot();
             }
             for (int banana = 0; banana < 2; banana++){
                 addBanana();
+            }
+        }
+        else{
+            for (int carrot = 0; carrot < 2; carrot++){
+                addCarrot();
             }
         }
     }
@@ -119,7 +123,9 @@ public class BoardModel : MonoBehaviour
             int firstNum = rnd.Next(getGridSizeX());
             int secondNum = rnd.Next(getGridSizeY());
 
-            if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot") 
+            if (this.gridBoard[firstNum, secondNum] == null && this.gridBoard[firstNum, secondNum] != "Carrot" 
+            && this.gridBoard[firstNum, secondNum] != "Broccoli"
+            && ((firstNum - secondNum)%2) != 0)
             {
                 this.gridBoard[firstNum, secondNum] = "Banana";
                 Debug.Log("Banana: x is " + firstNum + " and y is" + secondNum);       
