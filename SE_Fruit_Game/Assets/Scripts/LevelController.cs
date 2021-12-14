@@ -360,7 +360,7 @@ public class LevelController : MonoBehaviour
                 if (level > 1 && consecutiveEmptyTiles < 8)
                 {
                     BoardObject.GetComponent<BoardModel>().moveVegetables();
-                    BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
+                    BoardObject.GetComponent<BoardModel>().GetVegetablePosition();
                 }
                 
                 if (level > 1 && BoardObject.GetComponent<BoardModel>().HasLevelFailed())
@@ -526,8 +526,8 @@ public class LevelController : MonoBehaviour
         Fruit.SetActive(true);
         Fruit.transform.position = SelectedTilePos;
         BananasRemaining -= 1;
-        BoardObject.GetComponent<BoardModel>().PushCarrotsBackOneMove();
-        BoardObject.GetComponent<BoardModel>().GetCarrotPosition();
+        BoardObject.GetComponent<BoardModel>().PushVegetablesBackOneMove();
+        BoardObject.GetComponent<BoardModel>().GetVegetablePosition();
         Text text = SpeechText.GetComponent<Text>();
         text.text = SteveQuotes.BananaFound;
         StartCoroutine(FadeSpeechBubble());
