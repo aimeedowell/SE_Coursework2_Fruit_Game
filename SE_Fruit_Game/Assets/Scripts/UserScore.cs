@@ -8,7 +8,6 @@ public class UserScore : MonoBehaviour
 
     public void Start(){
         this.score = 100; 
-        StaticVariables.Score = 0; 
     }
 
     public void incrementScore() {
