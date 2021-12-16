@@ -46,7 +46,6 @@ public class LevelController : MonoBehaviour
    
     public void ContinueButtonClicked()
     {
-
         Debug.Log(level);
 
         if (level == 1)
@@ -97,8 +96,17 @@ public class LevelController : MonoBehaviour
 
     public void SaveAndQuitClicked()
     {
+        SaveGame();
         SceneManager.LoadScene("MainMenu");
         Reset();
+    }
+
+    void SaveGame()
+    {
+        PlayerPrefs.SetInt("SavedScore", StaticVariables.Score);
+        PlayerPrefs.SetInt("SavedLevel", level);
+        PlayerPrefs.Save();
+        Debug.Log("Game data saved!");
     }
 
     private void Awake() 
