@@ -47,6 +47,8 @@ public class MainMenuController : MonoBehaviour
         else
         {
             Debug.LogError("There is no saved data!");
+            StaticVariables.Score = 0;
+            StaticVariables.Level = 1;
         }
     }
 }
