@@ -241,6 +241,8 @@ public class BoardModel : MonoBehaviour
                 }
                 else if(this.gridBoard[i,j] == "Broccoli" && !RepositionedVegetables.Contains(VegetableCheck)){
                     
+                    previousVegPositions.Add(i);
+                    previousVegPositions.Add(j);
                     var newPos  = GetNewBroccoliPosition(i, j);
                     RepositionedVegetables.Add(newPos); 
                     GetVegetablePosition();

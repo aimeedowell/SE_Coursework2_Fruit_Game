@@ -84,6 +84,8 @@ public class LevelController : MonoBehaviour
     public void ReturnButtonClicked()
     {
         MidLevelMenu.SetActive(false);
+        LevelFailed.SetActive(false);
+        LevelComplete.SetActive(false);
         QuitToMenuWarning.SetActive(true);
     }
 
