@@ -167,11 +167,11 @@ public class BoardModel : MonoBehaviour
     public double getDistance(int xCoord, int yCoord){
         int steveLocationX = 1; 
         int steveLocationY = 1; 
-        if (Level == 2) {
+        if (this.level == 2) {
             steveLocationX = 2;
             steveLocationY = 2;
         }
-        if (Level == 3) {
+        if (this.level == 3) {
             steveLocationX = 3;
             steveLocationY = 1;
         }
