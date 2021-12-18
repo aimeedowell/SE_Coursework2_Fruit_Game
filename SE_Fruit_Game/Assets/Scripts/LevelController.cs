@@ -149,6 +149,8 @@ public class LevelController : MonoBehaviour
         else
             level = StaticVariables.StartingLevel;
 
+        if (level == 3)
+            CarrotsRemaining = 3;
 
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
@@ -161,9 +163,12 @@ public class LevelController : MonoBehaviour
             {
                 ban.SetActive(false);
             }
-            foreach (GameObject bro in BroccoliArray)
+            if (level == 2)
             {
-                bro.SetActive(false);
+                foreach (GameObject bro in BroccoliArray)
+                {
+                    bro.SetActive(false);
+                }
             }
         }
   
@@ -349,7 +354,7 @@ public class LevelController : MonoBehaviour
                 else if (VegetableFound == "Banana" && BananasRemaining > 0)
                     PushVegetablesBack();
 
-                if (level == 1)
+                if (level == 1 || level == 3)
                 {
                     if (CarrotsRemaining == 0)
                         StartCoroutine(ShowLevelComplete());
@@ -389,7 +394,7 @@ public class LevelController : MonoBehaviour
     {
         CarrotsRemainingText = GameObject.Find("CarrotsRemainingText").GetComponent<Text>();
         CarrotsRemainingText.text = CarrotsRemaining.ToString();
-        if (level > 1)
+        if (level == 2)
         {
             BroccoliRemainingText = GameObject.Find("BroccoliRemainingText").GetComponent<Text>();
             BroccoliRemainingText.text = BroccoliRemaining.ToString();
@@ -428,6 +433,9 @@ public class LevelController : MonoBehaviour
 
         level = StaticVariables.Level;
 
+        if (level == 3)
+            CarrotsRemaining = 3;
+            
         //Make all vegetables invisible
         foreach (GameObject car in CarrotsArray)
         {
@@ -439,9 +447,12 @@ public class LevelController : MonoBehaviour
             {
                 ban.SetActive(false);
             }
-            foreach (GameObject broc in BroccoliArray)
+            if (level == 2)
             {
-                broc.SetActive(false);
+                foreach (GameObject bro in BroccoliArray)
+                {
+                    bro.SetActive(false);
+                }
             }
         }
 
@@ -553,7 +564,7 @@ public class LevelController : MonoBehaviour
  
             while (!foundCarrot)
             {
-                if (level == 1)
+                if (level == 1 || level == 3)
                 {
                     if (FindACarrotOnRow(TileRow1))
                         foundCarrot = true;
@@ -577,7 +588,7 @@ public class LevelController : MonoBehaviour
                 }
             }
             RemoveCarrotFromBoard();
-            if (level == 1)
+            if (level == 1 || level == 3)
             {
                 if (CarrotsRemaining == 0)
                     StartCoroutine(ShowLevelComplete());

@@ -26,7 +26,7 @@ public class QuestionPopUpManager : MonoBehaviour
         ScoreManager.AddComponent<UserScore>();  
         QuestionGen = new GameObject();
         QuestionGen.AddComponent<ArithmeticQuestionGenerator>();
-        QuestionGen.GetComponent<ArithmeticQuestionGenerator>().Level = 1;
+        QuestionGen.GetComponent<ArithmeticQuestionGenerator>().Level = StaticVariables.Level;
     }
 
     public void HideQuestionPopUp()
