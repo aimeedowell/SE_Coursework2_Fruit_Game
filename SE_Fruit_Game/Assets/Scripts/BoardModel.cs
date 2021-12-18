@@ -103,7 +103,7 @@ public class BoardModel : MonoBehaviour
         int minReqDistance = 1;
         bool foundCell = false; 
 
-        if (Level == 2){
+        if (this.level > 1){
             minReqDistance = 2;
         }
 
@@ -143,7 +143,7 @@ public class BoardModel : MonoBehaviour
             } 
         }
     }
-        public void addBroccoli(){
+    public void addBroccoli(){
         int minReqDistance = 2;
         bool foundCell = false; 
 
