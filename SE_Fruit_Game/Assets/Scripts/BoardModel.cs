@@ -41,7 +41,7 @@ public class BoardModel : MonoBehaviour
             this.gridBoard[3,1] = "Strawberry";
         }
         
-        if (level > 1)
+        if (level == 2)
         {
             for (int broc = 0; broc < 1; broc++){
                 addBroccoli();
@@ -53,7 +53,17 @@ public class BoardModel : MonoBehaviour
                 addBanana();
             }
         }
-        else{
+        if (level == 3)
+        {
+            for (int carrot = 0; carrot < 3; carrot++){
+                addCarrot();
+            }
+            for (int banana = 0; banana < 2; banana++){
+                addBanana();
+            }
+        }
+        else // level == 1
+        {
             for (int carrot = 0; carrot < 2; carrot++){
                 addCarrot();
             }
